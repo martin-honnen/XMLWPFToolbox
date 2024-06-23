@@ -8,7 +8,8 @@
         xmlns:commands="clr-namespace:XMLWPFToolbox.Commands"
         xmlns:local="clr-namespace:XMLWPFToolbox"
         mc:Ignorable="d"
-        Title="XSLT 3.0, XQuery 3.1, XPath 3.1 Toolbox" Height="800" Width="1024">
+        Title="XSLT 3.0, XQuery 3.1, XPath 3.1 Toolbox" Height="800" Width="1024"
+        Icon="xmltools.ico">
     <Window.CommandBindings>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXmlInput" Executed="LoadXmlInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadJsonInput" Executed="LoadJsonInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
