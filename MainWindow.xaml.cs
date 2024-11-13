@@ -263,7 +263,7 @@ declare option output:indent ""yes"";
 
         private void AboutXsltXQueryXPathNotepad_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1 XML Toolbox using Saxon " + processor.getSaxonEdition() + " " + processor.getSaxonProductVersion(), "About XSLT 3.0/XQuery 3.1/XPath 3.1 Toolbox");
+            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1 XML Toolbox using Saxon " + processor.getSaxonEdition() + " " + processor.getSaxonProductVersion() + $" run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1 Toolbox");
         }
 
         private string LoadFileIntoEditor(ICSharpCode.AvalonEdit.TextEditor editor, string filter)
