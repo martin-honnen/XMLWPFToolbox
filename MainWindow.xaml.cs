@@ -26,6 +26,7 @@ using JURI = java.net.URI;
 
 using JList = java.util.List;
 using javax.xml.transform.stream;
+using net.sf.saxon.lib;
 
 namespace XMLWPFToolbox
 {
@@ -333,6 +334,15 @@ declare option output:indent ""yes"";
 
                 Xslt30Transformer transformer = xsltCompiler.compile(new StreamSource(new JStringReader(codeEditor.Text), baseXsltCodeURI)).load30();
 
+                var loggerWriter = new JStringWriter();
+
+                var traceLogger = new StandardLogger(loggerWriter);
+
+                transformer.setTraceFunctionDestination(traceLogger);
+
+                var messageHandler = new SimpleMessageHandler();
+                transformer.setMessageHandler(messageHandler);
+
                 transformer.setBaseOutputURI("urn:to-string"); //.BaseOutputURI = "urn:to-string";
 
                 var mainSerializer = new MySerializer(processor);
@@ -368,7 +378,24 @@ declare option output:indent ""yes"";
 
                     statusText.Text = "";
 
-                    DisplayResultDocuments(resultDocumentsHandler.GetSerializedResultDocuments());
+                    var serializedResultDocuments = resultDocumentsHandler.GetSerializedResultDocuments();
+
+                    if (messageHandler.Messages.Any())
+                    {
+                        serializedResultDocuments.Add("*** messages ***", messageHandler.GetMessages());
+
+                    }
+
+                    var traces = loggerWriter.ToString();
+
+                    if (traces != string.Empty)
+                    {
+                        serializedResultDocuments.Add("*** trace ***", loggerWriter.ToString());
+                    }
+
+                    traceLogger.close();
+
+                    DisplayResultDocuments(serializedResultDocuments);
                 }
                 else
                 {
@@ -380,7 +407,24 @@ declare option output:indent ""yes"";
 
                     statusText.Text = "";
 
-                    DisplayResultDocuments(resultDocumentsHandler.GetSerializedResultDocuments());
+                    var serializedResultDocuments = resultDocumentsHandler.GetSerializedResultDocuments();
+
+                    if (messageHandler.Messages.Any())
+                    {
+                        serializedResultDocuments.Add("*** messages ***", messageHandler.GetMessages());
+
+                    }
+
+                    var traces = loggerWriter.ToString();
+
+                    if (traces != string.Empty)
+                    {
+                        serializedResultDocuments.Add("*** trace ***", loggerWriter.ToString());
+                    }
+
+                    traceLogger.close();
+
+                    DisplayResultDocuments(serializedResultDocuments);
                 }
             }
             catch (Exception ex)

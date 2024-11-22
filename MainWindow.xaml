@@ -158,7 +158,7 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel x:Name="resultPanel" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top">
-                <Label Target="{Binding ElementName=resultDocumentList}">Result Documents</Label>
+                <Label Target="{Binding ElementName=resultDocumentList}">Results/Messages/Trace</Label>
                 <ComboBox x:Name="resultDocumentList"></ComboBox>
                 <CheckBox x:Name="renderResultCbx" Content="Render result?" IsChecked="True" VerticalAlignment="Center"/>
             </StackPanel>
