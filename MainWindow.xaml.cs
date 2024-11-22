@@ -192,7 +192,7 @@ namespace XMLWPFToolbox
 
   <xsl:output indent=""yes""/>
 
-  <xsl:template match=""/"">
+  <xsl:template match=""/"" name=""xsl:initial-template"">
     <xsl:copy>
       <xsl:apply-templates/>
       <xsl:comment>Run with {system-property('xsl:product-name')} {system-property('xsl:product-version')} at {current-dateTime()}</xsl:comment>
@@ -555,6 +555,12 @@ declare option output:indent ""yes"";
 
                     var xqueryEvaluator = xqueryCompiler.compile(codeEditor.Text).load();
 
+                    var loggerWriter = new JStringWriter();
+
+                    var traceLogger = new StandardLogger(loggerWriter);
+
+                    xqueryEvaluator.setTraceFunctionDestination(traceLogger);
+
                     if ((bool)xmlInputType.IsChecked)
                     {
                         statusText.Text = "Parsing XML input document...";
@@ -576,9 +582,25 @@ declare option output:indent ""yes"";
                     statusText.Text = "";
 
                     var result = sw.toString();
-                    resultEditor.Text = result;
-                    resultWebView.NavigateToString(result);
-                    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
+
+                    var traces = loggerWriter.toString();
+
+                    if (traces != string.Empty)
+                    {
+                        var results = new Dictionary<String, string>();
+                        results.Add("*** XQuery results ***", result);
+                        results.Add("*** Trace ***", traces);
+
+                        ShowResultDocumentList();
+
+                        DisplayResultDocuments(results);
+                    }
+                    else
+                    {
+                        resultEditor.Text = result;
+                        resultWebView.NavigateToString(result);
+                        resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
+                    }
                 }
             }
             catch (Exception ex)
