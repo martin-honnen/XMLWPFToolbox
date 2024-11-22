@@ -26,7 +26,7 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="FontAwesome6.Svg" Version="2.5.1" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2849.39" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
     <PackageReference Include="SaxonHE12s9apiExtensions" Version="12.5.9.6" />
     <MavenReference Include="net.sf.saxon:Saxon-HE" Version="12.5" />
   </ItemGroup>
