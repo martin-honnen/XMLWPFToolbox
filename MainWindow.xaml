@@ -71,7 +71,7 @@
                 <MenuItem Command="Paste" />
             </MenuItem>
             <MenuItem Header="_Help">
-                <MenuItem Header="About XSLT/XQuery/XPath Notepad" Command="commands:MyApplicationCommands.AboutXsltXQueryXPathNotepad"/>
+                <MenuItem Header="About XSLT/XQuery/XPath Toolbox" Command="commands:MyApplicationCommands.AboutXsltXQueryXPathNotepad"/>
             </MenuItem>
         </Menu>
         <ToolBarTray Grid.Row="1" Grid.Column="0">
