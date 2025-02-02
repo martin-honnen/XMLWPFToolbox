@@ -8,7 +8,7 @@
         xmlns:commands="clr-namespace:XMLWPFToolbox.Commands"
         xmlns:local="clr-namespace:XMLWPFToolbox"
         mc:Ignorable="d"
-        Title="XSLT 3.0, XQuery 3.1, XPath 3.1 Toolbox" Height="800" Width="1024"
+        Title="XSLT 3.0, XQuery 3.1, XPath 3.1, XSD 1.1 Toolbox" Height="800" Width="1024"
         Icon="xmltools.ico">
     <Window.CommandBindings>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXmlInput" Executed="LoadXmlInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
@@ -16,6 +16,7 @@
         <CommandBinding Command="commands:MyApplicationCommands.LoadXsltCode" Executed="LoadXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXQueryCode" Executed="LoadXQueryCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXPathCode" Executed="LoadXPathCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.LoadXsdCode" Executed="LoadXsdCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.NewXsltCode" Executed="NewXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.NewXQueryCode" Executed="NewXQueryCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveXsltCode" Executed="SaveXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
@@ -24,7 +25,7 @@
         <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocument" Executed="SaveInputDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveResultDocument" Executed="SaveResultDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.NewPadWindow" Executed="NewPadWindow_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
-        <CommandBinding Command="commands:MyApplicationCommands.AboutXsltXQueryXPathNotepad" Executed="AboutXsltXQueryXPathNotepad_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.AboutXMLToolbox" Executed="AboutXMLToolbox_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
     </Window.CommandBindings>
     <Grid x:Name="mainGrid">
         <Grid.RowDefinitions>
@@ -47,6 +48,7 @@
                     <MenuItem Header="Open _JSON input" Command="commands:MyApplicationCommands.LoadJsonInput"/>
                     <MenuItem Header="Open X_SLT file" Command="commands:MyApplicationCommands.LoadXsltCode"/>
                     <MenuItem Header="Open X_Query file" Command="commands:MyApplicationCommands.LoadXQueryCode"/>
+                    <MenuItem Header="Open XS_D file" Command="commands:MyApplicationCommands.LoadXsdCode"/>
                     <MenuItem Header="Open X_Path file" Command="commands:MyApplicationCommands.LoadXPathCode"/>
                 </MenuItem>
                 <MenuItem Header="New file/window">
@@ -57,6 +59,7 @@
                 <MenuItem Header="Save file/code">
                     <MenuItem Header="Save XSLT code" Command="commands:MyApplicationCommands.SaveXsltCode"/>
                     <MenuItem Header="Save XQuery code" Command="commands:MyApplicationCommands.SaveXQueryCode"/>
+                    <MenuItem Header="Save XSD code" Command="commands:MyApplicationCommands.SaveXsdCode"/>
                     <MenuItem Header="Save XPath code" Command="commands:MyApplicationCommands.SaveXPathCode"/>
                     <MenuItem Header="Save input document" Command="commands:MyApplicationCommands.SaveInputDocument"/>
                     <MenuItem Header="Save result document" Command="commands:MyApplicationCommands.SaveResultDocument"/>
@@ -71,7 +74,7 @@
                 <MenuItem Command="Paste" />
             </MenuItem>
             <MenuItem Header="_Help">
-                <MenuItem Header="About XSLT/XQuery/XPath Toolbox" Command="commands:MyApplicationCommands.AboutXsltXQueryXPathNotepad"/>
+                <MenuItem Header="About XSLT/XQuery/XPath/XSD Toolbox" Command="commands:MyApplicationCommands.AboutXMLToolbox"/>
             </MenuItem>
         </Menu>
         <ToolBarTray Grid.Row="1" Grid.Column="0">
@@ -88,6 +91,8 @@
                 <RadioButton x:Name="codeTypeXslt" GroupName="codeType" Content="XSLT" IsChecked="True" Click="codeTypeXslt_Click"/>
                 <RadioButton x:Name="codeTypeXQuery" GroupName="codeType" Content="XQuery" IsChecked="False" Click="codeTypeXQuery_Click"/>
                 <RadioButton x:Name="codeTypeXPath" GroupName="codeType" Content="XPath" IsChecked="False" Click="codeTypeXPath_Click"/>
+                <RadioButton x:Name="codeTypeXsd" GroupName="codeType" Content="XSD" IsChecked="False" Click="codeTypeXsd_Click"/>
+
                 <Button x:Name="evaluateCode" Click="evaluateCode_Click">
                     <StackPanel Orientation="Horizontal">
                         <Image fa:FontAwesome.Icon="Solid_Play" fa:FontAwesome.PrimaryColor="Green" Width="14" Height="14"/>
@@ -98,6 +103,7 @@
                 <CheckBox x:Name="autoEvaluateCbx" Content="Automatic evaluation" IsChecked="False" Checked="autoEvaluateCbx_Checked"/>
                 <Button x:Name="xsltTransformationButton" Click="xsltTransformationButton_Click">XSLT transformation</Button>
                 <Button x:Name="xqueryEvaluationBtn" Click="xqueryEvaluationBtn_Click">XQuery evaluation</Button>
+                <Button x:Name="xsdValidationButton" Click="xsdValidationButton_Click">XSD validation</Button>
                 <Button x:Name="xpathEvaluationBtn" Click="xpathEvaluationBtn_Click">XPath evaluation</Button>
             </ToolBar>
         </ToolBarTray>

@@ -28,6 +28,12 @@ using JList = java.util.List;
 using javax.xml.transform.stream;
 using net.sf.saxon.lib;
 
+using javax.xml;
+using javax.xml.validation;
+using org.xml.sax;
+using JFile = java.io.File;
+using System.Reflection;
+
 namespace XMLWPFToolbox
 {
     /// <summary>
@@ -35,6 +41,20 @@ namespace XMLWPFToolbox
     /// </summary>
     public partial class MainWindow : Window
     {
+        private static SchemaFactory xsd11SchemaFactory = new org.apache.xerces.jaxp.validation.XMLSchema11Factory();
+        private static SchemaFactory xsd10SchemaFactory = new org.apache.xerces.jaxp.validation.XMLSchemaFactory();
+
+        static MainWindow()
+        {
+            ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("xercesImpl"));
+
+            ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("icu4j"));
+
+            ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("java-cup"));
+
+            ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("xpath2"));
+        }
+
         private static readonly string defaultBaseInputURI = "urn:from-string";
 
         private string baseXsltCodeURI = defaultBaseInputURI;
@@ -42,6 +62,8 @@ namespace XMLWPFToolbox
         private string baseXQueryCodeURI = defaultBaseInputURI;
 
         private string baseXPathCodeURI = defaultBaseInputURI;
+
+        private string baseXsdCodeURI = defaultBaseInputURI;
 
         private string baseInputCodeURI = defaultBaseInputURI;
 
@@ -127,6 +149,11 @@ namespace XMLWPFToolbox
         private void xsltTransformationButton_Click(object sender, RoutedEventArgs e)
         {
             runXsltTransformation();
+        }
+
+        private void xsdValidationButton_Click(object sender, RoutedEventArgs e)
+        {
+            runXsdValidation();
         }
 
         private void DisplayResultDocuments(Dictionary<string, string> serializedDocuments)
@@ -239,6 +266,11 @@ declare option output:indent ""yes"";
         {
             baseXPathCodeURI = LoadFileIntoEditor(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*");
         }
+
+        private void LoadXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            baseXsdCodeURI = LoadFileIntoEditor(codeEditor, "XSD schema files|*.xsd;*.xml|All files|*.*");
+        }
         private void SaveXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*");
@@ -252,6 +284,11 @@ declare option output:indent ""yes"";
         {
             SaveEditorToFile(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*");
         }
+
+        private void SaveXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveEditorToFile(codeEditor, "XSD schema files|*.xsd;*.xml|All files|*.*");
+        }
         private void SaveResultDocument_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveEditorToFile(resultEditor, "HTML files|*.html;*.html|XML files|*.xml|Text files|*.txt;*.text|JSON files|*.json|All files|*.*");
@@ -262,9 +299,9 @@ declare option output:indent ""yes"";
             SaveEditorToFile(inputEditor, "XML files|*.xml|JSON files|*.json|All files|*.*");
         }
 
-        private void AboutXsltXQueryXPathNotepad_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void AboutXMLToolbox_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1 XML Toolbox using Saxon " + processor.getSaxonEdition() + " " + processor.getSaxonProductVersion() + $" run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1 Toolbox");
+            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1, XSD 1.1 XML Toolbox using Saxon " + processor.getSaxonEdition() + " " + processor.getSaxonProductVersion() + $" and {org.apache.xerces.impl.Version.getVersion()} run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1/XSD 1.1 Toolbox");
         }
 
         private string LoadFileIntoEditor(ICSharpCode.AvalonEdit.TextEditor editor, string filter)
@@ -483,6 +520,73 @@ declare option output:indent ""yes"";
             {
                 runXPathEvaluation();
             }
+            else if ((bool)codeTypeXsd.IsChecked)
+            {
+                runXsdValidation();
+            }
+        }
+
+        private void runXsdValidation()
+        {
+            statusText.Text = "";
+            HideResultDocumentList();
+            ClearResultDocumentList();
+            renderResultCbx.IsChecked = false;
+            resultEditor.Clear();
+
+            Schema schema;
+
+            if (baseXsdCodeURI == null || baseXsdCodeURI == "" || baseXsdCodeURI == defaultBaseInputURI)
+            {
+                schema = xsd11SchemaFactory.newSchema();
+            }
+            else
+            {
+                statusText.Text = "Parsing/compiling your schema...";
+                try
+                {
+                    schema = xsd11SchemaFactory.newSchema(new StreamSource(new JStringReader(codeEditor.Text), baseXsdCodeURI));
+                }
+                catch (SAXParseException ex)
+                {
+                    statusText.Text += "Schema parsing failed: " + ex.Message;
+                    return;
+                }
+            }
+
+            Validator validator = schema.newValidator();
+
+            var myErrorHandler = new MyErrorHandler();
+
+            validator.setErrorHandler(myErrorHandler);
+
+            statusText.Text = "Parsing/validating your XML input...";
+
+            string resultString;
+
+            try
+            {
+                validator.validate(new StreamSource(new JStringReader(inputEditor.Text), baseInputCodeURI));
+            }
+            catch (SAXParseException ex)
+            {
+                statusText.Text = "Parsing your XML input failed:" + ex.Message + " (" + ex.getLineNumber() + ":" + ex.getColumnNumber() + ")";
+                resultString = "Parsing your XML input failed:\r\n" + ex.Message + " (" + ex.getLineNumber() + ":" + ex.getColumnNumber() + ")\r\n";
+            }
+
+
+            if (myErrorHandler.Valid)
+            {
+                statusText.Text = resultString = "XML input is valid against schema.";
+            }
+            else
+            {
+                statusText.Text = $"Validation failed: {myErrorHandler.ErrorList.Count} errors.";
+                resultString = "Validation failed:\r\n" + string.Join("\r\n", myErrorHandler.ErrorList);
+            }
+
+            resultEditor.Text = resultString;
+            resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
         }
 
         private void runXPathEvaluation()
@@ -633,6 +737,10 @@ declare option output:indent ""yes"";
 
         }
 
+        private void codeTypeXsd_Click(object sender, RoutedEventArgs e)
+        {
+        }
+
         private void renderResultCbx_Checked(object sender, RoutedEventArgs e)
         {
             if (resultWebView != null)
@@ -640,5 +748,6 @@ declare option output:indent ""yes"";
                 resultWebView.Visibility = (bool)renderResultCbx.IsChecked ? Visibility.Visible : Visibility.Collapsed;
             }
         }
+
     }
 }

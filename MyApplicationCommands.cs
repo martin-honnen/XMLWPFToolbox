@@ -18,6 +18,8 @@ namespace XMLWPFToolbox.Commands
         public static RoutedUICommand LoadXQueryCode = new RoutedUICommand("Load XQuery file", "LoadXQueryCode", typeof(MyApplicationCommands));
         public static RoutedUICommand LoadXPathCode = new RoutedUICommand("Load XPath file", "LoadXPathCode", typeof(MyApplicationCommands));
 
+        public static RoutedUICommand LoadXsdCode = new RoutedUICommand("Load XSD file", "LoadXsdCode", typeof(MyApplicationCommands));
+
         public static RoutedUICommand NewXsltCode = new RoutedUICommand("New XSLT file", "NewXsltCode", typeof(MyApplicationCommands));
         public static RoutedUICommand NewXQueryCode = new RoutedUICommand("New XQuery file", "NewXQueryCode", typeof(MyApplicationCommands));
 
@@ -28,11 +30,15 @@ namespace XMLWPFToolbox.Commands
         public static RoutedUICommand SaveXQueryCode = new RoutedUICommand("Save XQuery code", "SaveXQueryCode", typeof(MyApplicationCommands));
 
         public static RoutedUICommand SaveXPathCode = new RoutedUICommand("Save XPath code", "SaveXPathCode", typeof(MyApplicationCommands));
+
+        public static RoutedUICommand SaveXsdCode = new RoutedUICommand("Save XSD code", "SaveXsdCode", typeof(MyApplicationCommands));
+
+
         public static RoutedUICommand SaveResultDocument = new RoutedUICommand("Save result document", "SaveResultDocument", typeof(MyApplicationCommands));
 
         public static RoutedUICommand NewPadWindow = new RoutedUICommand("New XSLT/XQuery/XPath Notepad window", "NewPadWindow", typeof(MyApplicationCommands));
 
-        public static RoutedUICommand AboutXsltXQueryXPathNotepad = new RoutedUICommand("About XSLT/XQuery/XPath Notepad", "AboutDialogue", typeof(MyApplicationCommands));
+        public static RoutedUICommand AboutXMLToolbox = new RoutedUICommand("About XSLT/XQuery/XPath/XSD Toolbox", "AboutDialogue", typeof(MyApplicationCommands));
 
     }
 }
