@@ -24,6 +24,7 @@
         <CommandBinding Command="commands:MyApplicationCommands.SaveXPathCode" Executed="SaveXPathCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocument" Executed="SaveInputDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveResultDocument" Executed="SaveResultDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.SaveAll" Executed="SaveAll_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.NewPadWindow" Executed="NewPadWindow_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.AboutXMLToolbox" Executed="AboutXMLToolbox_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
     </Window.CommandBindings>
@@ -63,6 +64,8 @@
                     <MenuItem Header="Save XPath code" Command="commands:MyApplicationCommands.SaveXPathCode"/>
                     <MenuItem Header="Save input document" Command="commands:MyApplicationCommands.SaveInputDocument"/>
                     <MenuItem Header="Save result document" Command="commands:MyApplicationCommands.SaveResultDocument"/>
+                    <Separator/>
+                    <MenuItem Header="Save all" Command="commands:MyApplicationCommands.SaveAll"/>
                 </MenuItem>
             </MenuItem>
             <MenuItem Header="_Edit">

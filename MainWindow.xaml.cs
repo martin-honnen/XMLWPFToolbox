@@ -57,6 +57,8 @@ namespace XMLWPFToolbox
 
         private static readonly string defaultBaseInputURI = "urn:from-string";
 
+        private string baseResultURI = defaultBaseInputURI;
+
         private string baseXsltCodeURI = defaultBaseInputURI;
 
         private string baseXQueryCodeURI = defaultBaseInputURI;
@@ -245,58 +247,79 @@ declare option output:indent ""yes"";
         }
         private void LoadXmlInput_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            baseInputCodeURI = LoadFileIntoEditor(inputEditor, "XML files|*.xml|XHTML files|*.xhtml|All files|*.*");
+            baseInputCodeURI = LoadFileIntoEditor(inputEditor, "XML files|*.xml|XHTML files|*.xhtml|All files|*.*", xmlInputType);
         }
 
         private void LoadJsonInput_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            baseInputCodeURI = LoadFileIntoEditor(inputEditor, "JSON files|*.json|All files|*.*");
+            baseInputCodeURI = LoadFileIntoEditor(inputEditor, "JSON files|*.json|All files|*.*", jsonInputType);
         }
 
         private void LoadXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            baseXsltCodeURI = LoadFileIntoEditor(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*") ?? defaultBaseInputURI;
+            baseXsltCodeURI = LoadFileIntoEditor(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*", codeTypeXslt) ?? defaultBaseInputURI;
         }
 
         private void LoadXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            baseXQueryCodeURI = LoadFileIntoEditor(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xql;*.xquery|All files|*.*");
+            baseXQueryCodeURI = LoadFileIntoEditor(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xql;*.xquery|All files|*.*", codeTypeXQuery);
         }
         private void LoadXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            baseXPathCodeURI = LoadFileIntoEditor(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*");
+            baseXPathCodeURI = LoadFileIntoEditor(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*", codeTypeXPath);
         }
 
         private void LoadXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            baseXsdCodeURI = LoadFileIntoEditor(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*");
+            baseXsdCodeURI = LoadFileIntoEditor(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*", codeTypeXsd);
+        }
+
+        private void SaveAll_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveInputDocument_Executed(sender, e);
+            if ((bool)codeTypeXslt.IsChecked)
+            {
+                SaveXsltCode_Executed(sender, e);
+            }
+            else if ((bool)codeTypeXQuery.IsChecked)
+            {
+                SaveXQueryCode_Executed(sender, e);
+            }
+            else if ((bool)codeTypeXPath.IsChecked)
+            {
+                SaveXPathCode_Executed(sender, e);
+            }
+            else if ((bool)codeTypeXsd.IsChecked)
+            {
+                SaveXsdCode_Executed(sender, e);
+            }
         }
         private void SaveXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*");
+            SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*", baseXsltCodeURI);
         }
 
         private void SaveXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xql;*.xquery|All files|*.*");
+            SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xql;*.xquery|All files|*.*", baseXQueryCodeURI);
         }
         private void SaveXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*");
+            SaveEditorToFile(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*", baseXPathCodeURI);
         }
 
         private void SaveXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*");
+            SaveEditorToFile(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*", baseXsdCodeURI);
         }
         private void SaveResultDocument_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(resultEditor, "HTML files|*.html;*.html|XML files|*.xml|Text files|*.txt;*.text|JSON files|*.json|All files|*.*");
+            SaveEditorToFile(resultEditor, "HTML files|*.html;*.html|XML files|*.xml|Text files|*.txt;*.text|JSON files|*.json|All files|*.*", baseResultURI);
         }
 
         private void SaveInputDocument_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(inputEditor, "XML files|*.xml|JSON files|*.json|All files|*.*");
+            SaveEditorToFile(inputEditor, "XML files|*.xml|JSON files|*.json|All files|*.*", baseInputCodeURI);
         }
 
         private void AboutXMLToolbox_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -304,7 +327,7 @@ declare option output:indent ""yes"";
             MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1, XSD 1.1 XML Toolbox using Saxon " + processor.getSaxonEdition() + " " + processor.getSaxonProductVersion() + $" and {org.apache.xerces.impl.Version.getVersion()} run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1/XSD 1.1 Toolbox");
         }
 
-        private string LoadFileIntoEditor(ICSharpCode.AvalonEdit.TextEditor editor, string filter)
+        private string LoadFileIntoEditor(ICSharpCode.AvalonEdit.TextEditor editor, string filter, RadioButton type)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
@@ -316,6 +339,7 @@ declare option output:indent ""yes"";
             {
                 //editor.Text = File.ReadAllText(openFileDialog.FileName);
                 editor.Load(openFileDialog.FileName);
+                type.IsChecked = true;
                 editor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinitionByExtension(Path.GetExtension(openFileDialog.FileName));
                 return new Uri(openFileDialog.FileName).AbsoluteUri;
             }
@@ -323,9 +347,9 @@ declare option output:indent ""yes"";
             return null;
         }
 
-        private void SaveEditorToFile(ICSharpCode.AvalonEdit.TextEditor editor, string filter)
+        private void SaveEditorToFile(ICSharpCode.AvalonEdit.TextEditor editor, string filter, string baseURI)
         {
-            string currentFileName = null;
+            string currentFileName = baseURI == defaultBaseInputURI ? null : new Uri(baseURI).AbsolutePath;
 
             if (currentFileName == null)
             {

@@ -36,6 +36,9 @@ namespace XMLWPFToolbox.Commands
 
         public static RoutedUICommand SaveResultDocument = new RoutedUICommand("Save result document", "SaveResultDocument", typeof(MyApplicationCommands));
 
+        public static RoutedUICommand SaveAll = new RoutedUICommand("Save all", "SaveAll", typeof(MyApplicationCommands));
+
+
         public static RoutedUICommand NewPadWindow = new RoutedUICommand("New XSLT/XQuery/XPath Notepad window", "NewPadWindow", typeof(MyApplicationCommands));
 
         public static RoutedUICommand AboutXMLToolbox = new RoutedUICommand("About XSLT/XQuery/XPath/XSD Toolbox", "AboutDialogue", typeof(MyApplicationCommands));
