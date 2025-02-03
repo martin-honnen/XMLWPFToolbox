@@ -232,6 +232,8 @@ namespace XMLWPFToolbox
 
             baseXsltCodeURI = defaultBaseInputURI;
 
+            codeTypeXslt.IsChecked = true;
+
         }
 
         private void NewXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -247,14 +249,19 @@ declare option output:indent ""yes"";
 .";
 
             baseXQueryCodeURI = defaultBaseInputURI;
+
+            codeTypeXQuery.IsChecked = true;
         }
 
         private void NewXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             codeEditor.Text = @"<xs:schema xmlns:xs=""http://www.w3.org/2001/XMLSchema"">
-<xs:schema/>";
+
+</xs:schema>";
 
             baseXsdCodeURI = defaultBaseInputURI;
+
+            codeTypeXsd.IsChecked = true;
         }
 
         private void NewXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -262,6 +269,8 @@ declare option output:indent ""yes"";
             codeEditor.Text = @"";
 
             baseXPathCodeURI = defaultBaseInputURI;
+
+            codeTypeXPath.IsChecked = true;
         }
 
         private void NewXmlInput_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -331,6 +340,31 @@ declare option output:indent ""yes"";
         private void SaveXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*", baseXsltCodeURI);
+        }
+
+        private void SaveXsltCodeAs_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*", defaultBaseInputURI);
+        }
+
+        private void SaveXQueryCodeAs_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xql;*.xquery|All files|*.*", defaultBaseInputURI);
+        }
+
+        private void SaveXPathCodeAs_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveEditorToFile(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*", defaultBaseInputURI);
+        }
+
+        private void SaveXsdCodeAs_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveEditorToFile(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*", defaultBaseInputURI);
+        }
+
+        private void SaveInputDocumentAs_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            SaveEditorToFile(inputEditor, "XML files|*.xml|JSON files|*.json|All files|*.*", defaultBaseInputURI);
         }
 
         private void SaveXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -594,7 +628,7 @@ declare option output:indent ""yes"";
 
             Schema schema;
 
-            if (baseXsdCodeURI == null || baseXsdCodeURI == "" || baseXsdCodeURI == defaultBaseInputURI)
+            if (codeEditor.Text == string.Empty)
             {
                 schema = xsd11SchemaFactory.newSchema();
             }

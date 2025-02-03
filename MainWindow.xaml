@@ -31,6 +31,14 @@
         <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocument" Executed="SaveInputDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveResultDocument" Executed="SaveResultDocument_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveAll" Executed="SaveAll_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.SaveXsltCodeAs" Executed="SaveXsltCodeAs_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.SaveXQueryCodeAs" Executed="SaveXQueryCodeAs_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.SaveXsdCodeAs" Executed="SaveXsdCodeAs_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.SaveXPathCodeAs" Executed="SaveXPathCodeAs_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+
+        <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocumentAs" Executed="SaveInputDocumentAs_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+
+        
         <CommandBinding Command="commands:MyApplicationCommands.NewPadWindow" Executed="NewPadWindow_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.AboutXMLToolbox" Executed="AboutXMLToolbox_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
     </Window.CommandBindings>
@@ -76,6 +84,13 @@
                     <MenuItem Header="Save XPath code" Command="commands:MyApplicationCommands.SaveXPathCode"/>
                     <MenuItem Header="Save input document" Command="commands:MyApplicationCommands.SaveInputDocument"/>
                     <MenuItem Header="Save result document" Command="commands:MyApplicationCommands.SaveResultDocument"/>
+                    <Separator/>
+                    <MenuItem Header="Save XSLT code as..." Command="commands:MyApplicationCommands.SaveXsltCodeAs"/>
+                    <MenuItem Header="Save XQuery code as..." Command="commands:MyApplicationCommands.SaveXQueryCodeAs"/>
+                    <MenuItem Header="Save XSD code as..." Command="commands:MyApplicationCommands.SaveXsdCodeAs"/>
+                    <MenuItem Header="Save XPath code as..." Command="commands:MyApplicationCommands.SaveXPathCodeAs"/>
+                    <MenuItem Command="commands:MyApplicationCommands.SaveInputDocumentAs"/>
+
                     <Separator/>
                     <MenuItem Header="Save all" Command="commands:MyApplicationCommands.SaveAll"/>
                 </MenuItem>
@@ -139,6 +154,7 @@
                     <MenuItem Command="Paste" />
                     <Separator/>
                     <MenuItem Command="commands:MyApplicationCommands.SaveInputDocument" />
+                    <MenuItem Command="commands:MyApplicationCommands.SaveInputDocumentAs" />
                 </ContextMenu>
             </avalonEdit:TextEditor.ContextMenu>
         </avalonEdit:TextEditor>
@@ -161,7 +177,13 @@
                     <Separator/>
                     <MenuItem Command="commands:MyApplicationCommands.SaveXsltCode"/>
                     <MenuItem Command="commands:MyApplicationCommands.SaveXQueryCode"/>
+                    <MenuItem Command="commands:MyApplicationCommands.SaveXsdCode"/>
                     <MenuItem Command="commands:MyApplicationCommands.SaveXPathCode"/>
+                    <Separator/>
+                    <MenuItem Header="Save XSLT code as..." Command="commands:MyApplicationCommands.SaveXsltCodeAs"/>
+                    <MenuItem Header="Save XQuery code as..." Command="commands:MyApplicationCommands.SaveXQueryCodeAs"/>
+                    <MenuItem Header="Save XSD code as..." Command="commands:MyApplicationCommands.SaveXsdCodeAs"/>
+                    <MenuItem Header="Save XPath code as..." Command="commands:MyApplicationCommands.SaveXPathCodeAs"/>
                 </ContextMenu>
             </avalonEdit:TextEditor.ContextMenu>
         </avalonEdit:TextEditor>

@@ -44,6 +44,15 @@ public static class MyApplicationCommands
 
     public static RoutedUICommand SaveAll = new RoutedUICommand("Save all", "SaveAll", typeof(MyApplicationCommands));
 
+    public static RoutedUICommand SaveXsltCodeAs = new RoutedUICommand("Save XSLT code as...", "SaveXsltCodeAs", typeof(MyApplicationCommands));
+
+    public static RoutedUICommand SaveXQueryCodeAs = new RoutedUICommand("Save XQuery code as...", "SaveXQueryCodeAs", typeof(MyApplicationCommands));
+
+    public static RoutedUICommand SaveXsdCodeAs = new RoutedUICommand("Save XSD code as...", "SaveXsdCodeAs", typeof(MyApplicationCommands));
+
+    public static RoutedUICommand SaveXPathCodeAs = new RoutedUICommand("Save XPath code as...", "SaveXPathCodeAs", typeof(MyApplicationCommands));
+
+    public static RoutedUICommand SaveInputDocumentAs = new RoutedUICommand("Save input document as...", "SaveInputDocumentAs", typeof(MyApplicationCommands));
 
     public static RoutedUICommand NewPadWindow = new RoutedUICommand("New XSLT/XQuery/XPath Notepad window", "NewPadWindow", typeof(MyApplicationCommands));
 
