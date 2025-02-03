@@ -230,6 +230,8 @@ namespace XMLWPFToolbox
 
 </xsl:stylesheet>";
 
+            baseXsltCodeURI = defaultBaseInputURI;
+
         }
 
         private void NewXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -244,6 +246,38 @@ declare option output:indent ""yes"";
 
 .";
 
+            baseXQueryCodeURI = defaultBaseInputURI;
+        }
+
+        private void NewXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            codeEditor.Text = @"<xs:schema xmlns:xs=""http://www.w3.org/2001/XMLSchema"">
+<xs:schema/>";
+
+            baseXsdCodeURI = defaultBaseInputURI;
+        }
+
+        private void NewXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            codeEditor.Text = @"";
+
+            baseXPathCodeURI = defaultBaseInputURI;
+        }
+
+        private void NewXmlInput_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            inputEditor.Text = @"<?xml version=""1.0"" encoding=""UTF-8""?>";
+
+            baseInputCodeURI = defaultBaseInputURI;
+        }
+
+        private void NewJsonInput_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            inputEditor.Text = @"{
+  
+}";
+
+            baseInputCodeURI = defaultBaseInputURI;
         }
         private void LoadXmlInput_Executed(object sender, ExecutedRoutedEventArgs e)
         {

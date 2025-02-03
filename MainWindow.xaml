@@ -19,6 +19,10 @@
         <CommandBinding Command="commands:MyApplicationCommands.LoadXsdCode" Executed="LoadXsdCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.NewXsltCode" Executed="NewXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.NewXQueryCode" Executed="NewXQueryCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.NewXsdCode" Executed="NewXsdCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.NewXPathCode" Executed="NewXPathCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.NewJsonInput" Executed="NewJsonInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.NewXmlInput" Executed="NewXmlInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveXsltCode" Executed="SaveXsltCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveXQueryCode" Executed="SaveXQueryCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.SaveXPathCode" Executed="SaveXPathCode_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
@@ -55,6 +59,12 @@
                 <MenuItem Header="New file/window">
                     <MenuItem Header="New XSLT file" Command="commands:MyApplicationCommands.NewXsltCode"/>
                     <MenuItem Header="New XQuery file" Command="commands:MyApplicationCommands.NewXQueryCode"/>
+                    <MenuItem Header="New XSD file" Command="commands:MyApplicationCommands.NewXsdCode"/>
+                    <MenuItem Header="New XPath file" Command="commands:MyApplicationCommands.NewXPathCode"/>
+
+                    <MenuItem Header="New XML file" Command="commands:MyApplicationCommands.NewXmlInput"/>
+                    <MenuItem Header="New JSON file" Command="commands:MyApplicationCommands.NewJsonInput"/>
+
                     <MenuItem Header="New XSLT/XQuery/XPath notepad window" Command="commands:MyApplicationCommands.NewPadWindow"/>
                 </MenuItem>
                 <MenuItem Header="Save file/code">
