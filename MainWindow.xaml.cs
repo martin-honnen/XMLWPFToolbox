@@ -269,7 +269,7 @@ declare option output:indent ""yes"";
 
         private void LoadXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            baseXsdCodeURI = LoadFileIntoEditor(codeEditor, "XSD schema files|*.xsd;*.xml|All files|*.*");
+            baseXsdCodeURI = LoadFileIntoEditor(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*");
         }
         private void SaveXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -287,7 +287,7 @@ declare option output:indent ""yes"";
 
         private void SaveXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XSD schema files|*.xsd;*.xml|All files|*.*");
+            SaveEditorToFile(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*");
         }
         private void SaveResultDocument_Executed(object sender, ExecutedRoutedEventArgs e)
         {
