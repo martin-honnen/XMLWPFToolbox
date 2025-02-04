@@ -339,55 +339,98 @@ declare option output:indent ""yes"";
         }
         private void SaveXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*", baseXsltCodeURI);
+            var result = SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*", baseXsltCodeURI);
+            if (result != null) {
+                baseXsltCodeURI = result;
+            }
         }
 
         private void SaveXsltCodeAs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*", defaultBaseInputURI);
+            var result = SaveEditorToFile(codeEditor, "XSLT files|*.xsl;*.xslt|All files|*.*", defaultBaseInputURI);
+            if (result != null)
+            {
+                baseXsltCodeURI = result;
+            }
         }
 
         private void SaveXQueryCodeAs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xql;*.xquery|All files|*.*", defaultBaseInputURI);
+            var result = SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xql;*.xquery|All files|*.*", defaultBaseInputURI);
+            if (result != null)
+            {
+                baseXQueryCodeURI = result;
+            }
         }
 
         private void SaveXPathCodeAs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*", defaultBaseInputURI);
+            var result = SaveEditorToFile(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*", defaultBaseInputURI);
+            if (result != null)
+            {
+                baseXPathCodeURI = result;
+            }
         }
 
         private void SaveXsdCodeAs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*", defaultBaseInputURI);
+            var result = SaveEditorToFile(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*", defaultBaseInputURI);
+            if (result != null)
+            {
+                baseXsdCodeURI = result;
+            }
         }
 
         private void SaveInputDocumentAs_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(inputEditor, "XML files|*.xml|JSON files|*.json|All files|*.*", defaultBaseInputURI);
+            var result = SaveEditorToFile(inputEditor, "XML files|*.xml|JSON files|*.json|All files|*.*", defaultBaseInputURI);
+            if (result != null)
+            {
+                baseInputCodeURI = result;
+            }
         }
 
         private void SaveXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xql;*.xquery|All files|*.*", baseXQueryCodeURI);
+            var result = SaveEditorToFile(codeEditor, "XQuery files|*.xq;*.xqy;*.xqu;*.xqm;*.xql;*.xquery|All files|*.*", baseXQueryCodeURI);
+            if (result != null)
+            {
+                baseXQueryCodeURI = result;
+            }
         }
         private void SaveXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*", baseXPathCodeURI);
+            var result = SaveEditorToFile(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*", baseXPathCodeURI);
+            if (result != null)
+            {
+                baseXPathCodeURI = result;
+            }
         }
 
         private void SaveXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*", baseXsdCodeURI);
+            var result = SaveEditorToFile(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*", baseXsdCodeURI);
+            if (result != null)
+            {
+                baseXsdCodeURI = result;
+            }
         }
         private void SaveResultDocument_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(resultEditor, "HTML files|*.html;*.html|XML files|*.xml|Text files|*.txt;*.text|JSON files|*.json|All files|*.*", baseResultURI);
+            var result = SaveEditorToFile(resultEditor, "HTML files|*.html;*.html|XML files|*.xml|Text files|*.txt;*.text|JSON files|*.json|All files|*.*", baseResultURI);
+            if (result != null)
+            {
+                baseResultURI = result;
+            }
         }
 
         private void SaveInputDocument_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            SaveEditorToFile(inputEditor, "XML files|*.xml|JSON files|*.json|All files|*.*", baseInputCodeURI);
+            var result = SaveEditorToFile(inputEditor, "XML files|*.xml|JSON files|*.json|All files|*.*", baseInputCodeURI);
+            if (result != null)
+            {
+                baseInputCodeURI = result;
+            }
         }
 
         private void AboutXMLToolbox_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -415,7 +458,7 @@ declare option output:indent ""yes"";
             return null;
         }
 
-        private void SaveEditorToFile(ICSharpCode.AvalonEdit.TextEditor editor, string filter, string baseURI)
+        private string SaveEditorToFile(ICSharpCode.AvalonEdit.TextEditor editor, string filter, string baseURI)
         {
             string currentFileName = baseURI == defaultBaseInputURI ? null : new Uri(baseURI).AbsolutePath;
 
@@ -431,11 +474,13 @@ declare option output:indent ""yes"";
                 }
                 else
                 {
-                    return;
+                    return null;
                 }
             }
 
             editor.Save(currentFileName);
+
+            return new Uri(currentFileName).AbsoluteUri;
         }
 
         private void XmlInputType_Click(object sender, RoutedEventArgs e)
