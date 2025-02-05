@@ -27,14 +27,14 @@
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
     <PackageReference Include="FontAwesome6.Svg" Version="2.5.1" />
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2957.106" />
-    <PackageReference Include="SaxonHE12s9apiExtensions" Version="12.5.9.6" />
+    <PackageReference Include="SaxonHE12s9apiExtensions" Version="12.5.9.8" />
     <MavenReference Include="net.sf.saxon:Saxon-HE" Version="12.5" />
     <MavenReference Include="com.evolvedbinary.thirdparty.xerces:xercesImpl" Version="2.12.2.1" Classifier="xml-schema-1.1" />
     <MavenReference Include="xml-resolver:xml-resolver" Version="1.2" />
     <MavenReference Include="com.evolvedbinary.thirdparty.xml-apis:xml-apis" Version="1.4.02" />
-    <MavenReference Include="edu.princeton.cup:java-cup" Version="10k"/>
-    <MavenReference Include="com.ibm.icu:icu4j" Version="4.8.1.1"/>
-    <MavenReference Include="com.evolvedbinary.thirdparty.org.eclipse.wst.xml:xpath2" Version="1.2.1"/>
+    <MavenReference Include="edu.princeton.cup:java-cup" Version="10k" />
+    <MavenReference Include="com.ibm.icu:icu4j" Version="4.8.1.1" />
+    <MavenReference Include="com.evolvedbinary.thirdparty.org.eclipse.wst.xml:xpath2" Version="1.2.1" />
   </ItemGroup>
 
 </Project>
