@@ -46,13 +46,15 @@ namespace XMLWPFToolbox
 
         static MainWindow()
         {
-            ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("xercesImpl"));
+            //ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("xercesImpl"));
 
-            ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("icu4j"));
+            //ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("icu4j"));
 
-            ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("java-cup"));
+            //ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("java-cup"));
 
-            ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("xpath2"));
+            //ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("xpath2"));
+            
+            Assembly.Load("xpath2");
         }
 
         private static readonly string defaultBaseInputURI = "urn:from-string";
