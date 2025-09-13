@@ -26,9 +26,9 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
     <PackageReference Include="FontAwesome6.Svg" Version="2.5.1" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3351.48" />
-    <PackageReference Include="SaxonHE12s9apiExtensions" Version="12.8.0" />
-    <MavenReference Include="net.sf.saxon:Saxon-HE" Version="12.7" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3485.44" />
+    <PackageReference Include="SaxonHE12s9apiExtensions" Version="12.9.1" />
+    <MavenReference Include="net.sf.saxon:Saxon-HE" Version="12.9" />
     <MavenReference Include="com.evolvedbinary.thirdparty.xerces:xercesImpl" Version="2.12.2.2" Classifier="xml-schema-1.1" />
     <MavenReference Include="xml-resolver:xml-resolver" Version="1.2" />
     <MavenReference Include="com.evolvedbinary.thirdparty.xml-apis:xml-apis" Version="1.4.02" />
