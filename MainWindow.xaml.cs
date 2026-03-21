@@ -33,6 +33,7 @@ using javax.xml.validation;
 using org.xml.sax;
 using JFile = java.io.File;
 using System.Reflection;
+using com.sun.tools.sjavac;
 
 namespace XMLWPFToolbox
 {
@@ -58,6 +59,8 @@ namespace XMLWPFToolbox
         }
 
         private static readonly string defaultBaseInputURI = "urn:from-string";
+
+        private bool useSaxonEngine = true;
 
         private string baseResultURI = defaultBaseInputURI;
 
@@ -89,6 +92,8 @@ namespace XMLWPFToolbox
 
         private XPathSelector xpathResultSerializer;
 
+        private PhoenixmlDb.Xslt.XsltTransformer transformer;
+
         private SelectionChangedEventHandler selectionChangedEventHandler;
 
         private DispatcherTimer typingTimer;
@@ -116,6 +121,8 @@ namespace XMLWPFToolbox
             xpathResultCompiler.declareVariable(new QName("serialization-parameters"));
 
             xpathResultSerializer = xpathResultCompiler.compile("serialize($value, $serialization-parameters)").load();
+
+            transformer = new PhoenixmlDb.Xslt.XsltTransformer();
 
             typingTimer = new DispatcherTimer(DispatcherPriority.ContextIdle);
             typingTimer.Interval = TimeSpan.FromSeconds(1.2);
@@ -205,6 +212,19 @@ namespace XMLWPFToolbox
         private void CommonCommandBinding_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
+        }
+
+        private void ToggleEngine_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            useSaxonEngine = !useSaxonEngine;
+            if (useSaxonEngine)
+            {
+                statusText.Text = "Switched to Saxon engine.";
+            }
+            else
+            {
+                statusText.Text = "Switched to Phoenixml engine.";
+            }
         }
 
         private void NewPadWindow_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -437,7 +457,7 @@ declare option output:indent ""yes"";
 
         private void AboutXMLToolbox_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1, XSD 1.1 XML Toolbox using Saxon " + processor.getSaxonEdition() + " " + processor.getSaxonProductVersion() + $" and {org.apache.xerces.impl.Version.getVersion()} run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1/XSD 1.1 Toolbox");
+            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1, XSD 1.1 XML Toolbox using Saxon " + processor.getSaxonEdition() + " " + processor.getSaxonProductVersion() + " or PhoenixmlDb.Xslt 1.0" +  $" and {org.apache.xerces.impl.Version.getVersion()} run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1/XSD 1.1 Toolbox");
         }
 
         private string LoadFileIntoEditor(ICSharpCode.AvalonEdit.TextEditor editor, string filter, RadioButton type)
@@ -501,6 +521,20 @@ declare option output:indent ""yes"";
             ClearResultDocumentList();
             ShowResultDocumentList();
             resultEditor.Clear();
+
+            if (useSaxonEngine)
+            {
+                runXsltTransformationSaxon();
+            }
+            else
+            {
+                runXsltTransformationPhoenixml();
+            }
+
+        }
+
+        private void runXsltTransformationSaxon()
+        {
 
             xsltCompiler.setErrorReporter(new SimpleErrorCollector());
 
@@ -615,6 +649,144 @@ declare option output:indent ""yes"";
                     resultEditor.Text = string.Join("\n", errors.Select(error => string.Format("{0}: {1}:{2}", error.getMessage(), error.getLocation().getLineNumber(), error.getLocation().getColumnNumber())));
                     resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
                 }
+            }
+        }
+
+        private async Task runXsltTransformationPhoenixml()
+        {
+
+            //xsltCompiler.setErrorReporter(new SimpleErrorCollector());
+
+            try
+            {
+                statusText.Text = "Compiling XSLT code...";
+
+                await transformer.LoadStylesheetAsync(codeEditor.Text, new Uri(baseXsltCodeURI));
+
+                //Xslt30Transformer transformer = xsltCompiler.compile(new StreamSource(new JStringReader(codeEditor.Text), baseXsltCodeURI)).load30();
+
+                //var loggerWriter = new JStringWriter();
+
+                //var traceLogger = new StandardLogger(loggerWriter);
+
+                //transformer.setTraceFunctionDestination(traceLogger);
+
+                //var messageHandler = new SimpleMessageHandler();
+                //transformer.setMessageHandler(messageHandler);
+
+                //transformer.setBaseOutputURI("urn:to-string"); //.BaseOutputURI = "urn:to-string";
+
+                //var mainSerializer = new MySerializer(processor);
+                //Dictionary<string, MySerializer> resultDocuments = new Dictionary<string, MySerializer>();
+                //resultDocuments["*** principal result ***"] = mainSerializer;
+
+                //var resultDocumentsHandler = new MyResultDocumentsHandler(processor, resultDocuments);
+
+                //transformer.setResultDocumentHandler(resultDocumentsHandler); //ResultDocumentHandler = new MyResultDocumentsHandler(processor, resultDocuments);
+
+                //XdmItem inputItem = null;
+
+                //if ((bool)xmlInputType.IsChecked)
+                //{
+                //    statusText.Text = "Parsing XML input document...";
+
+                //    docBuilder.setBaseURI(new JURI(baseInputCodeURI));  //.BaseUri = new Uri(baseInputCodeURI);
+                //    inputItem = docBuilder.build(new StreamSource(new JStringReader(inputEditor.Text)));
+                //}
+                //else if ((bool)jsonInputType.IsChecked)
+                //{
+                //    statusText.Text = "Parsing JSON input...";
+
+                //    inputItem = (XdmItem)jsonBuilder.parseJson(inputEditor.Text);
+                //}
+
+
+                if (!(bool)xmlInputType.IsChecked && !(bool)jsonInputType.IsChecked)
+                {
+                    statusText.Text = "Running xsl:initialTemplate...";
+
+                    transformer.SetInitialTemplate("initial-template", "http://www.w3.org/1999/XSL/Transform");
+
+                    var result = await transformer.TransformAsync(null);
+
+                    var serializedResultDocuments = new Dictionary<string, string>() { { "*** principal result ***", result } };
+
+                    statusText.Text = "";
+
+                    foreach (var kvp in transformer.SecondaryResultDocuments)
+                    {
+                        serializedResultDocuments[kvp.Key] = kvp.Value;
+                    }
+
+                    //if (messageHandler.Messages.Any())
+                    //{
+                    //    serializedResultDocuments.Add("*** messages ***", messageHandler.GetMessages());
+
+                    //}
+
+                    //var traces = loggerWriter.ToString();
+
+                    //if (traces != string.Empty)
+                    //{
+                    //    serializedResultDocuments.Add("*** trace ***", loggerWriter.ToString());
+                    //}
+
+                    //traceLogger.close();
+
+                    DisplayResultDocuments(serializedResultDocuments);
+                }
+                else
+                {
+
+                    statusText.Text = "Applying templates processing...";
+
+                    if (baseInputCodeURI != null)
+                    {
+                        transformer.SetSourceDocumentUri(new Uri(baseInputCodeURI));
+                    }
+
+                    var result = await transformer.TransformAsync(inputEditor.Text);
+
+                    var serializedResultDocuments = new Dictionary<string, string>() { { "*** principal result ***", result } };
+
+                    statusText.Text = "";
+
+                    foreach (var kvp in transformer.SecondaryResultDocuments)
+                    {
+                        serializedResultDocuments[kvp.Key] = kvp.Value;
+                    }
+                    //if (messageHandler.Messages.Any())
+                    //{
+                    //    serializedResultDocuments.Add("*** messages ***", messageHandler.GetMessages());
+
+                    //}
+
+                    //var traces = loggerWriter.ToString();
+
+                    //if (traces != string.Empty)
+                    //{
+                    //    serializedResultDocuments.Add("*** trace ***", loggerWriter.ToString());
+                    //}
+
+                    //traceLogger.close();
+
+                    DisplayResultDocuments(serializedResultDocuments);
+                }
+            }
+            catch (Exception ex)
+            {
+                statusText.Text = ex.Message;
+                resultEditor.Text = ex.Message;
+                resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
+                //throw ex;
+
+                //var errors = (xsltCompiler.getErrorReporter() as SimpleErrorCollector).ErrorList;
+                //if (errors.Any())
+                //{
+                //    statusText.Text += string.Format(": {0}: {1}:{2}", errors.First().getMessage(), errors.First().getLocation().getLineNumber(), errors.First().getLocation().getColumnNumber());
+                //    resultEditor.Text = string.Join("\n", errors.Select(error => string.Format("{0}: {1}:{2}", error.getMessage(), error.getLocation().getLineNumber(), error.getLocation().getColumnNumber())));
+                //    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
+                //}
             }
         }
 

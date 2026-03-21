@@ -54,6 +54,9 @@ public static class MyApplicationCommands
 
     public static RoutedUICommand SaveInputDocumentAs = new RoutedUICommand("Save input document as...", "SaveInputDocumentAs", typeof(MyApplicationCommands));
 
+    public static RoutedUICommand ToggleEngine = new RoutedUICommand("Toggle Engine", "ToggleEngine", typeof(MyApplicationCommands));
+
+
     public static RoutedUICommand NewPadWindow = new RoutedUICommand("New XSLT/XQuery/XPath Notepad window", "NewPadWindow", typeof(MyApplicationCommands));
 
     public static RoutedUICommand AboutXMLToolbox = new RoutedUICommand("About XSLT/XQuery/XPath/XSD Toolbox", "AboutDialogue", typeof(MyApplicationCommands));

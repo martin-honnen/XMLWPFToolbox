@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net8.0-windows;net9.0-windows;net10.0-windows</TargetFrameworks>
+    <TargetFramework>net10.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
@@ -35,6 +35,12 @@
     <!--<MavenReference Include="edu.princeton.cup:java-cup" Version="10k" />
     <MavenReference Include="com.ibm.icu:icu4j" Version="4.8.1.1" />-->
     <MavenReference Include="com.evolvedbinary.thirdparty.org.eclipse.wst.xml:xpath2" Version="1.2.1.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
+    <PackageReference Include="PhoenixmlDb.Xslt">
+      <Version>1.0.0</Version>
+    </PackageReference>
   </ItemGroup>
 
 </Project>

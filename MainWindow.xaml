@@ -38,7 +38,8 @@
 
         <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocumentAs" Executed="SaveInputDocumentAs_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
 
-        
+        <CommandBinding Command="commands:MyApplicationCommands.ToggleEngine" Executed="ToggleEngine_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+
         <CommandBinding Command="commands:MyApplicationCommands.NewPadWindow" Executed="NewPadWindow_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.AboutXMLToolbox" Executed="AboutXMLToolbox_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
     </Window.CommandBindings>
@@ -102,6 +103,9 @@
                 <MenuItem Command="Cut" />
                 <MenuItem Command="Copy" />
                 <MenuItem Command="Paste" />
+            </MenuItem>
+            <MenuItem Header="_Options">
+                <MenuItem Header="Saxon Engine" IsCheckable="True" IsChecked="True" Command="commands:MyApplicationCommands.ToggleEngine"/>
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="About XSLT/XQuery/XPath/XSD Toolbox" Command="commands:MyApplicationCommands.AboutXMLToolbox"/>
