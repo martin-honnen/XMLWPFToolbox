@@ -661,6 +661,8 @@ declare option output:indent ""yes"";
             {
                 statusText.Text = "Compiling XSLT code...";
 
+                transformer = new PhoenixmlDb.Xslt.XsltTransformer();
+
                 await transformer.LoadStylesheetAsync(codeEditor.Text, new Uri(baseXsltCodeURI));
 
                 //Xslt30Transformer transformer = xsltCompiler.compile(new StreamSource(new JStringReader(codeEditor.Text), baseXsltCodeURI)).load30();
@@ -707,7 +709,7 @@ declare option output:indent ""yes"";
 
                     transformer.SetInitialTemplate("initial-template", "http://www.w3.org/1999/XSL/Transform");
 
-                    var result = await transformer.TransformAsync(null);
+                    var result = await transformer.TransformAsync((string?)null);
 
                     var serializedResultDocuments = new Dictionary<string, string>() { { "*** principal result ***", result } };
 
