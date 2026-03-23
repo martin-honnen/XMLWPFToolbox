@@ -94,6 +94,8 @@ namespace XMLWPFToolbox
 
         private PhoenixmlDb.Xslt.XsltTransformer transformer;
 
+        private PhoenixmlDb.XQuery.XQueryFacade xqueryFacade;
+
         private SelectionChangedEventHandler selectionChangedEventHandler;
 
         private DispatcherTimer typingTimer;
@@ -123,6 +125,8 @@ namespace XMLWPFToolbox
             xpathResultSerializer = xpathResultCompiler.compile("serialize($value, $serialization-parameters)").load();
 
             transformer = new PhoenixmlDb.Xslt.XsltTransformer();
+
+            xqueryFacade = new PhoenixmlDb.XQuery.XQueryFacade();
 
             typingTimer = new DispatcherTimer(DispatcherPriority.ContextIdle);
             typingTimer.Interval = TimeSpan.FromSeconds(1.2);
@@ -958,6 +962,20 @@ declare option output:indent ""yes"";
             HideResultDocumentList();
             resultEditor.Clear();
 
+            if (useSaxonEngine)
+            {
+                runXQueryEvaluationSaxon();
+            }
+            else
+            {
+                runXQueryEvaluationPhoenixml();
+            }
+            
+        }
+
+        private void runXQueryEvaluationSaxon()
+        {
+ 
             xqueryCompiler.setErrorReporter(new SimpleErrorCollector());
 
             xqueryCompiler.setBaseURI(new JURI(baseXQueryCodeURI));//= new Uri(baseXQueryCodeURI).AbsoluteUri;
@@ -1027,11 +1045,38 @@ declare option output:indent ""yes"";
                 var errors = (xqueryCompiler.getErrorReporter() as SimpleErrorCollector).ErrorList;
                 if (errors.Any())
                 {
- 
+
                     statusText.Text += string.Format(": {0}: {1}:{2}", errors.First().getMessage(), errors.First().getLocation().getLineNumber(), errors.First().getLocation().getColumnNumber());
                     resultEditor.Text = string.Join("\n", errors.Select(error => string.Format("{0}: {1}:{2}", error.getMessage(), error.getLocation().getLineNumber(), error.getLocation().getColumnNumber())));
                     resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
                 }
+            }
+        }
+
+        private async Task runXQueryEvaluationPhoenixml()
+        {
+
+            xqueryFacade = new PhoenixmlDb.XQuery.XQueryFacade();
+
+
+
+            //xqueryCompiler.setBaseURI(new JURI(baseXQueryCodeURI));//= new Uri(baseXQueryCodeURI).AbsoluteUri;
+
+            try
+            {
+
+                var result = await xqueryFacade.EvaluateAsync(codeEditor.Text, (bool)xmlInputType.IsChecked ? inputEditor.Text : null);
+    
+                resultEditor.Text = result;
+                resultWebView.NavigateToString(result);
+                resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
+
+            }
+            catch (Exception ex)
+            {
+                statusText.Text = ex.Message;
+
+                resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
             }
         }
 
