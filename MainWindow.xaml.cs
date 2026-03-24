@@ -143,7 +143,7 @@ namespace XMLWPFToolbox
             {
                 typingTimer.IsEnabled = false;
                 typingTimer.Stop();
-                evaluateCurrentCodeType();
+                await evaluateCurrentCodeType();
             }
         }
 
