@@ -34,6 +34,7 @@ using org.xml.sax;
 using JFile = java.io.File;
 using System.Reflection;
 using com.sun.tools.sjavac;
+using System.IO;
 
 namespace XMLWPFToolbox
 {
@@ -136,7 +137,7 @@ namespace XMLWPFToolbox
 
         }
 
-        private void TypingTimer_Tick(object sender, EventArgs e)
+        private async void TypingTimer_Tick(object sender, EventArgs e)
         {
             if ((bool)autoEvaluateCbx.IsChecked)
             {
@@ -156,14 +157,14 @@ namespace XMLWPFToolbox
             runXPathEvaluation();
         }
 
-        private void xqueryEvaluationBtn_Click(object sender, RoutedEventArgs e)
+        private async void xqueryEvaluationBtn_Click(object sender, RoutedEventArgs e)
         {
-            runXQueryEvaluation();
+            await runXQueryEvaluation();
         }
 
-        private void xsltTransformationButton_Click(object sender, RoutedEventArgs e)
+        private async void xsltTransformationButton_Click(object sender, RoutedEventArgs e)
         {
-            runXsltTransformation();
+            await runXsltTransformation();
         }
 
         private void xsdValidationButton_Click(object sender, RoutedEventArgs e)
@@ -519,7 +520,7 @@ declare option output:indent ""yes"";
             inputEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Json");
         }
 
-        private void runXsltTransformation()
+        private async Task runXsltTransformation()
         {
             statusText.Text = "";
             ClearResultDocumentList();
@@ -532,7 +533,7 @@ declare option output:indent ""yes"";
             }
             else
             {
-                runXsltTransformationPhoenixml();
+                await runXsltTransformationPhoenixml();
             }
 
         }
@@ -667,6 +668,9 @@ declare option output:indent ""yes"";
 
                 transformer = new PhoenixmlDb.Xslt.XsltTransformer();
 
+                using var traceWriter = new StringWriter();
+                transformer.TraceListener = (depth, evt, details) => traceWriter.WriteLine($"{new string(' ', depth * 2)}{evt}: {details}");
+
                 await transformer.LoadStylesheetAsync(codeEditor.Text, new Uri(baseXsltCodeURI));
 
                 //Xslt30Transformer transformer = xsltCompiler.compile(new StreamSource(new JStringReader(codeEditor.Text), baseXsltCodeURI)).load30();
@@ -724,6 +728,12 @@ declare option output:indent ""yes"";
                         serializedResultDocuments[kvp.Key] = kvp.Value;
                     }
 
+                    var traces = traceWriter.ToString();
+
+                    if (traces != string.Empty)
+                    {
+                        serializedResultDocuments.Add("*** trace ***", traces);
+                    }
                     //if (messageHandler.Messages.Any())
                     //{
                     //    serializedResultDocuments.Add("*** messages ***", messageHandler.GetMessages());
@@ -760,6 +770,13 @@ declare option output:indent ""yes"";
                     foreach (var kvp in transformer.SecondaryResultDocuments)
                     {
                         serializedResultDocuments[kvp.Key] = kvp.Value;
+                    }
+
+                    var traces = traceWriter.ToString();
+
+                    if (traces != string.Empty)
+                    {
+                        serializedResultDocuments.Add("*** trace ***", traces);
                     }
                     //if (messageHandler.Messages.Any())
                     //{
@@ -818,20 +835,20 @@ declare option output:indent ""yes"";
             }
         }
 
-        private void evaluateCode_Click(object sender, RoutedEventArgs e)
+        private async void evaluateCode_Click(object sender, RoutedEventArgs e)
         {
-            evaluateCurrentCodeType();
+            await evaluateCurrentCodeType();
         }
 
-        private void evaluateCurrentCodeType()
+        private async Task evaluateCurrentCodeType()
         {
             if ((bool)codeTypeXslt.IsChecked)
             {
-                runXsltTransformation();
+                await runXsltTransformation();
             }
             else if ((bool)codeTypeXQuery.IsChecked)
             {
-                runXQueryEvaluation();
+                await runXQueryEvaluation();
             }
             else if ((bool)codeTypeXPath.IsChecked)
             {
@@ -955,7 +972,7 @@ declare option output:indent ""yes"";
             }
         }
 
-        private void runXQueryEvaluation()
+        private async Task runXQueryEvaluation()
         {
             statusText.Text = "";
             ClearResultDocumentList();
@@ -968,7 +985,7 @@ declare option output:indent ""yes"";
             }
             else
             {
-                runXQueryEvaluationPhoenixml();
+                await runXQueryEvaluationPhoenixml();
             }
             
         }
