@@ -1082,7 +1082,7 @@ declare option output:indent ""yes"";
             try
             {
 
-                var result = await xqueryFacade.EvaluateAsync(codeEditor.Text, (bool)xmlInputType.IsChecked ? inputEditor.Text : null);
+                var result = await xqueryFacade.EvaluateAsync(codeEditor.Text, (bool)xmlInputType.IsChecked ? inputEditor.Text : null, (bool)xmlInputType.IsChecked ? new Uri(baseInputCodeURI) : null);
     
                 resultEditor.Text = result;
                 resultWebView.NavigateToString(result);
