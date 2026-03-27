@@ -672,7 +672,7 @@ declare option output:indent ""yes"";
                 transformer.TraceListener = (depth, evt, details) => traceWriter.WriteLine($"{new string(' ', depth * 2)}{evt}: {details}");
 
                 using var messageWriter = new StringWriter();
-                transformer.MessageListener = (message, terminate) => messageWriter.WriteLine(message);
+                transformer.MessageListenerWithLocation = (message, terminate, line, col) => messageWriter.WriteLine($"{message} ({line}:{col})");
 
                 await transformer.LoadStylesheetAsync(codeEditor.Text, new Uri(baseXsltCodeURI));
 
