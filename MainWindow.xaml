@@ -76,7 +76,7 @@
                     <MenuItem Header="New XML file" Command="commands:MyApplicationCommands.NewXmlInput"/>
                     <MenuItem Header="New JSON file" Command="commands:MyApplicationCommands.NewJsonInput"/>
 
-                    <MenuItem Header="New XSLT/XQuery/XPath notepad window" Command="commands:MyApplicationCommands.NewPadWindow"/>
+                    <MenuItem Header="New XMLWPFToolbox window" Command="commands:MyApplicationCommands.NewPadWindow"/>
                 </MenuItem>
                 <MenuItem Header="Save file/code">
                     <MenuItem Header="Save XSLT code" Command="commands:MyApplicationCommands.SaveXsltCode"/>
