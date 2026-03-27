@@ -671,6 +671,9 @@ declare option output:indent ""yes"";
                 using var traceWriter = new StringWriter();
                 transformer.TraceListener = (depth, evt, details) => traceWriter.WriteLine($"{new string(' ', depth * 2)}{evt}: {details}");
 
+                using var messageWriter = new StringWriter();
+                transformer.MessageListener = (message, terminate) => messageWriter.WriteLine(message);
+
                 await transformer.LoadStylesheetAsync(codeEditor.Text, new Uri(baseXsltCodeURI));
 
                 //Xslt30Transformer transformer = xsltCompiler.compile(new StreamSource(new JStringReader(codeEditor.Text), baseXsltCodeURI)).load30();
@@ -734,6 +737,13 @@ declare option output:indent ""yes"";
                     {
                         serializedResultDocuments.Add("*** trace ***", traces);
                     }
+
+                    var messages = messageWriter.ToString();
+                    
+                    if (messages != string.Empty)
+                    {
+                        serializedResultDocuments.Add("*** messages ***", messages);
+                    }
                     //if (messageHandler.Messages.Any())
                     //{
                     //    serializedResultDocuments.Add("*** messages ***", messageHandler.GetMessages());
@@ -777,6 +787,13 @@ declare option output:indent ""yes"";
                     if (traces != string.Empty)
                     {
                         serializedResultDocuments.Add("*** trace ***", traces);
+                    }
+
+                    var messages = messageWriter.ToString();
+
+                    if (messages != string.Empty)
+                    {
+                        serializedResultDocuments.Add("*** messages ***", messages);
                     }
                     //if (messageHandler.Messages.Any())
                     //{
@@ -1074,8 +1091,6 @@ declare option output:indent ""yes"";
         {
 
             xqueryFacade = new PhoenixmlDb.XQuery.XQueryFacade();
-
-
 
             //xqueryCompiler.setBaseURI(new JURI(baseXQueryCodeURI));//= new Uri(baseXQueryCodeURI).AbsoluteUri;
 
