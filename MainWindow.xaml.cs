@@ -35,6 +35,8 @@ using JFile = java.io.File;
 using System.Reflection;
 using com.sun.tools.sjavac;
 using System.IO;
+using PhoenixmlDb.XQuery.Functions;
+using PhoenixmlDb.Xslt;
 
 namespace XMLWPFToolbox
 {
@@ -1089,6 +1091,7 @@ declare option output:indent ""yes"";
 
         private async Task runXQueryEvaluationPhoenixml()
         {
+            TransformFunction.Provider = new XsltTransformProvider();
 
             xqueryFacade = new PhoenixmlDb.XQuery.XQueryFacade();
 
