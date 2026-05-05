@@ -37,6 +37,10 @@ using com.sun.tools.sjavac;
 using System.IO;
 using PhoenixmlDb.XQuery.Functions;
 using PhoenixmlDb.Xslt;
+using PhoenixmlDb.Xslt.Engine;
+using PhoenixmlDb.XQuery.Execution;
+using PhoenixmlDb.XQuery.Parser;
+using System.Xml;
 
 namespace XMLWPFToolbox
 {
@@ -741,7 +745,7 @@ declare option output:indent ""yes"";
                     }
 
                     var messages = messageWriter.ToString();
-                    
+
                     if (messages != string.Empty)
                     {
                         serializedResultDocuments.Add("*** messages ***", messages);
@@ -815,10 +819,18 @@ declare option output:indent ""yes"";
                     DisplayResultDocuments(serializedResultDocuments);
                 }
             }
-            catch (Exception ex)
+            catch (XmlException ex)
             {
                 statusText.Text = ex.Message;
-                resultEditor.Text = ex.Message;
+                resultEditor.Text = $"{ex.Message} in {ex.SourceUri}{ex.LineNumber}:{ex.LinePosition}";
+                resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
+            }
+            catch (XsltException ex)
+            {
+                statusText.Text = ex.Message;
+                resultEditor.Text = ex.Location is { } loc
+                    ? $"{ex.Message} in {loc.Module} at {loc.Line}:{loc.Column}"
+                    : ex.Message;
                 resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
                 //throw ex;
 
@@ -829,6 +841,12 @@ declare option output:indent ""yes"";
                 //    resultEditor.Text = string.Join("\n", errors.Select(error => string.Format("{0}: {1}:{2}", error.getMessage(), error.getLocation().getLineNumber(), error.getLocation().getColumnNumber())));
                 //    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
                 //}
+            }
+            catch (Exception ex)
+            {
+                statusText.Text = ex.Message;
+                resultEditor.Text = ex.Message;
+                resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
             }
         }
 
@@ -1106,10 +1124,28 @@ declare option output:indent ""yes"";
                 resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
 
             }
+            catch (XmlException ex)
+            {
+                statusText.Text = ex.Message;
+                resultEditor.Text = $"{ex.Message} in {ex.SourceUri}{ex.LineNumber}:{ex.LinePosition}";
+                resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
+            }
+            catch (XQueryParseException ex)
+            {
+                statusText.Text = ex.Message;
+                resultEditor.Text = ex.Message;
+                resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
+            }
+            catch (XQueryRuntimeException ex)
+            {
+                statusText.Text = ex.Message;
+                resultEditor.Text = ex.Message;
+                resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
+            }
             catch (Exception ex)
             {
                 statusText.Text = ex.Message;
-
+                resultEditor.Text = ex.Message;
                 resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
             }
         }
