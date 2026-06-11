@@ -41,6 +41,7 @@ using PhoenixmlDb.Xslt.Engine;
 using PhoenixmlDb.XQuery.Execution;
 using PhoenixmlDb.XQuery.Parser;
 using System.Xml;
+using PhoenixmlDb.Xdm;
 
 namespace XMLWPFToolbox
 {
@@ -81,6 +82,14 @@ namespace XMLWPFToolbox
 
         private string baseInputCodeURI = defaultBaseInputURI;
 
+        private static string parseJsonFromXslt = @"<xsl:stylesheet version=""3.0"" xmlns:xsl=""http://www.w3.org/1999/XSL/Transform"">
+  <xsl:output method=""adaptive""/>
+  <xsl:param name=""json"" as=""xs:string""/>
+  <xsl:template name=""xsl:initial-template"">
+    <xsl:sequence select=""parse-json($json)""/>
+  </xsl:template>
+</xsl:stylesheet>";
+
         private static Processor processor = new Processor();
 
         private XPathCompiler xpathCompiler;
@@ -100,6 +109,8 @@ namespace XMLWPFToolbox
         private XPathSelector xpathResultSerializer;
 
         private PhoenixmlDb.Xslt.XsltTransformer transformer;
+
+        private PhoenixmlDb.Xslt.XsltTransformer parseJsonTransformer;
 
         private PhoenixmlDb.XQuery.XQueryFacade xqueryFacade;
 
@@ -133,6 +144,8 @@ namespace XMLWPFToolbox
 
             transformer = new PhoenixmlDb.Xslt.XsltTransformer();
 
+            parseJsonTransformer = new PhoenixmlDb.Xslt.XsltTransformer();
+
             xqueryFacade = new PhoenixmlDb.XQuery.XQueryFacade();
 
             typingTimer = new DispatcherTimer(DispatcherPriority.ContextIdle);
@@ -157,6 +170,17 @@ namespace XMLWPFToolbox
         {
             //jsonBuilder.SetVariable(new QName("input"), new XdmAtomicValue(json));
             return (XdmItem)jsonBuilder.parseJson(json);
+        }
+
+        private async Task<XdmSequence> ParseJsonPhoenixml(string json)
+        {
+            await parseJsonTransformer.LoadStylesheetAsync(parseJsonFromXslt);
+
+            parseJsonTransformer.SetInitialTemplate("initial-template", "http://www.w3.org/1999/XSL/Transform");
+
+            parseJsonTransformer.SetParameter("json", json);
+
+            return await parseJsonTransformer.TransformToSequenceAsync((XdmSequence?)null);
         }
         private void xpathEvaluationBtn_Click(object sender, RoutedEventArgs e)
         {
@@ -766,6 +790,49 @@ declare option output:indent ""yes"";
                     //traceLogger.close();
 
                     DisplayResultDocuments(serializedResultDocuments);
+                }
+                else if ((bool)jsonInputType.IsChecked)
+                {
+
+                    statusText.Text = "Parsing JSON...";
+
+                    var inputJson = await ParseJsonPhoenixml(inputEditor.Text);
+
+                    statusText.Text = "Applying templates processing...";
+
+                    if (baseInputCodeURI != null)
+                    {
+                        transformer.SetSourceDocumentUri(new Uri(baseInputCodeURI));
+                    }
+
+                    var result = await transformer.TransformAsync(inputJson);
+
+                    var serializedResultDocuments = new Dictionary<string, string>() { { "*** principal result ***", result } };
+
+                    statusText.Text = "";
+
+                    foreach (var kvp in transformer.SecondaryResultDocuments)
+                    {
+                        serializedResultDocuments[kvp.Key] = kvp.Value;
+                    }
+
+                    var traces = traceWriter.ToString();
+
+                    if (traces != string.Empty)
+                    {
+                        serializedResultDocuments.Add("*** trace ***", traces);
+                    }
+
+                    var messages = messageWriter.ToString();
+
+                    if (messages != string.Empty)
+                    {
+                        serializedResultDocuments.Add("*** messages ***", messages);
+                    }
+                    
+
+                    DisplayResultDocuments(serializedResultDocuments);
+
                 }
                 else
                 {
