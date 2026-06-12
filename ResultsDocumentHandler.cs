@@ -4,19 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using com.sun.xml.@internal.messaging.saaj.util;
-using net.liberty_development.SaxonHE12s9apiExtensions;
-using net.sf.saxon.s9api;
-
-using java.util.function;
-
-using JURI = java.net.URI;
-using javax.swing;
+using Saxon.Api;
 
 
 namespace XMLWPFToolbox
 {
-    public class MyResultDocumentsHandler : Function
+    public class MyResultDocumentsHandler
     {
         private Processor processor;
         public Dictionary<string, MySerializer> ResultDocuments { get; set; }
@@ -28,12 +21,12 @@ namespace XMLWPFToolbox
         }
 
 
-        public object apply(object uri)
+        public IDestination ResultDocumentHandler(string href, Uri baseUri)
         {
-            JURI juri = (JURI)uri;
             var mySerializer = new MySerializer(processor);
-            ResultDocuments[juri.toASCIIString()] = mySerializer;
+            ResultDocuments[new Uri(baseUri, href).AbsoluteUri] = mySerializer;
             return mySerializer.serializer;
+
         }
 
         public Dictionary<string, string> GetSerializedResultDocuments()
@@ -49,15 +42,7 @@ namespace XMLWPFToolbox
                 });
         }
 
-        public Function andThen(Function after)
-        {
-            throw new NotImplementedException();
-        }
 
-        public Function compose(Function before)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class MySerializer

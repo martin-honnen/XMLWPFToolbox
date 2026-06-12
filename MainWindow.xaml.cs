@@ -16,24 +16,7 @@ using Microsoft.Win32;
 using ICSharpCode.AvalonEdit.Highlighting;
 using Path = System.IO.Path;
 
-using net.liberty_development.SaxonHE12s9apiExtensions;
-using net.sf.saxon.s9api;
 
-using JStringReader = java.io.StringReader;
-using JStringWriter = java.io.StringWriter;
-
-using JURI = java.net.URI;
-
-using JList = java.util.List;
-using javax.xml.transform.stream;
-using net.sf.saxon.lib;
-
-using javax.xml;
-using javax.xml.validation;
-using org.xml.sax;
-using JFile = java.io.File;
-using System.Reflection;
-using com.sun.tools.sjavac;
 using System.IO;
 using PhoenixmlDb.XQuery.Functions;
 using PhoenixmlDb.Xslt;
@@ -43,6 +26,8 @@ using PhoenixmlDb.XQuery.Parser;
 using System.Xml;
 using PhoenixmlDb.Xdm;
 
+using Saxon.Api;
+
 namespace XMLWPFToolbox
 {
     /// <summary>
@@ -50,8 +35,8 @@ namespace XMLWPFToolbox
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static SchemaFactory xsd11SchemaFactory = new org.apache.xerces.jaxp.validation.XMLSchema11Factory();
-        private static SchemaFactory xsd10SchemaFactory = new org.apache.xerces.jaxp.validation.XMLSchemaFactory();
+        //private static SchemaFactory xsd11SchemaFactory = new org.apache.xerces.jaxp.validation.XMLSchema11Factory();
+        //private static SchemaFactory xsd10SchemaFactory = new org.apache.xerces.jaxp.validation.XMLSchemaFactory();
 
         static MainWindow()
         {
@@ -63,7 +48,7 @@ namespace XMLWPFToolbox
 
             //ikvm.runtime.Startup.addBootClassPathAssembly(Assembly.Load("xpath2"));
             
-            Assembly.Load("xpath2");
+            //Assembly.Load("xpath2");
         }
 
         private static readonly string defaultBaseInputURI = "urn:from-string";
@@ -121,26 +106,26 @@ namespace XMLWPFToolbox
         {
             InitializeComponent();
 
-            xpathCompiler = processor.newXPathCompiler();
+            xpathCompiler = processor.NewXPathCompiler();
 
-            xqueryCompiler = processor.newXQueryCompiler();
+            xqueryCompiler = processor.NewXQueryCompiler();
 
-            xsltCompiler = processor.newXsltCompiler();
+            xsltCompiler = processor.NewXsltCompiler();
 
-            serializer = processor.newSerializer();
+            serializer = processor.NewSerializer();
 
-            docBuilder = processor.newDocumentBuilder();
+            docBuilder = processor.NewDocumentBuilder();
 
             //XPathCompiler jsonDocCompiler = processor.NewXPathCompiler();
             //jsonDocCompiler.DeclareVariable(new QName("input"));
 
-            jsonBuilder = processor.newJsonBuilder();
+            jsonBuilder = processor.NewJsonBuilder();
 
-            XPathCompiler xpathResultCompiler = processor.newXPathCompiler();
-            xpathResultCompiler.declareVariable(new QName("value"));
-            xpathResultCompiler.declareVariable(new QName("serialization-parameters"));
+            XPathCompiler xpathResultCompiler = processor.NewXPathCompiler();
+            xpathResultCompiler.DeclareVariable(new QName("value"));
+            xpathResultCompiler.DeclareVariable(new QName("serialization-parameters"));
 
-            xpathResultSerializer = xpathResultCompiler.compile("serialize($value, $serialization-parameters)").load();
+            xpathResultSerializer = xpathResultCompiler.Compile("serialize($value, $serialization-parameters)").Load();
 
             transformer = new PhoenixmlDb.Xslt.XsltTransformer();
 
@@ -197,10 +182,10 @@ namespace XMLWPFToolbox
             await runXsltTransformation();
         }
 
-        private void xsdValidationButton_Click(object sender, RoutedEventArgs e)
-        {
-            runXsdValidation();
-        }
+        //private void xsdValidationButton_Click(object sender, RoutedEventArgs e)
+        //{
+        //    runXsdValidation();
+        //}
 
         private void DisplayResultDocuments(Dictionary<string, string> serializedDocuments)
         {
@@ -254,7 +239,7 @@ namespace XMLWPFToolbox
             useSaxonEngine = !useSaxonEngine;
             if (useSaxonEngine)
             {
-                statusText.Text = "Switched to Saxon engine.";
+                statusText.Text = "Switched to SaxonCS-HE engine.";
             }
             else
             {
@@ -318,7 +303,7 @@ declare option output:indent ""yes"";
 
             baseXsdCodeURI = defaultBaseInputURI;
 
-            codeTypeXsd.IsChecked = true;
+            //codeTypeXsd.IsChecked = true;
         }
 
         private void NewXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -369,10 +354,10 @@ declare option output:indent ""yes"";
             baseXPathCodeURI = LoadFileIntoEditor(codeEditor, "XPath files|*.xpath;*.xp|All files|*.*", codeTypeXPath);
         }
 
-        private void LoadXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
-        {
-            baseXsdCodeURI = LoadFileIntoEditor(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*", codeTypeXsd);
-        }
+        //private void LoadXsdCode_Executed(object sender, ExecutedRoutedEventArgs e)
+        //{
+        //    baseXsdCodeURI = LoadFileIntoEditor(codeEditor, "XSD schema files|*.xsd|XML files|*.xml|All files|*.*", codeTypeXsd);
+        //}
 
         private void SaveAll_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -389,10 +374,10 @@ declare option output:indent ""yes"";
             {
                 SaveXPathCode_Executed(sender, e);
             }
-            else if ((bool)codeTypeXsd.IsChecked)
-            {
-                SaveXsdCode_Executed(sender, e);
-            }
+            //else if ((bool)codeTypeXsd.IsChecked)
+            //{
+            //    SaveXsdCode_Executed(sender, e);
+            //}
         }
         private void SaveXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
@@ -492,7 +477,7 @@ declare option output:indent ""yes"";
 
         private void AboutXMLToolbox_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1, XSD 1.1 XML Toolbox using Saxon " + processor.getSaxonEdition() + " " + processor.getSaxonProductVersion() + " or PhoenixmlDb.Xslt 1.4.5/PhoenixmlDb.XQuery 1.4.3" +  $" and {org.apache.xerces.impl.Version.getVersion()} run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1/XSD 1.1 Toolbox");
+            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1 XML Toolbox using Saxon " + processor.ProductVersion + " or PhoenixmlDb.Xslt 1.4.5/PhoenixmlDb.XQuery 1.4.3" +  $" run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1 Toolbox");
         }
 
         private string LoadFileIntoEditor(ICSharpCode.AvalonEdit.TextEditor editor, string filter, RadioButton type)
@@ -570,25 +555,29 @@ declare option output:indent ""yes"";
 
         private void runXsltTransformationSaxon()
         {
-
-            xsltCompiler.setErrorReporter(new SimpleErrorCollector());
+            var errorCollector = new SimpleErrorCollector();
+            xsltCompiler.ErrorReporter = errorCollector.ErrorReporter;
 
             try
             {
                 statusText.Text = "Compiling XSLT code...";
 
-                Xslt30Transformer transformer = xsltCompiler.compile(new StreamSource(new JStringReader(codeEditor.Text), baseXsltCodeURI)).load30();
+                xsltCompiler.BaseUri = new Uri(baseXsltCodeURI);
 
-                var loggerWriter = new JStringWriter();
+                Xslt30Transformer transformer = xsltCompiler.Compile(new StringReader(codeEditor.Text)).Load30();
 
-                var traceLogger = new StandardLogger(loggerWriter);
+                transformer.ErrorReporter = errorCollector.ErrorReporter;
 
-                transformer.setTraceFunctionDestination(traceLogger);
+                //var loggerWriter = new JStringWriter();
+
+                //var traceLogger = new StandardLogger(loggerWriter);
+
+                //transformer.SetTraceFunctionDestination(traceLogger);
 
                 var messageHandler = new SimpleMessageHandler();
-                transformer.setMessageHandler(messageHandler);
+                transformer.MessageListener = messageHandler.Handle;
 
-                transformer.setBaseOutputURI("urn:to-string"); //.BaseOutputURI = "urn:to-string";
+                transformer.BaseOutputURI = "urn:to-string";
 
                 var mainSerializer = new MySerializer(processor);
                 Dictionary<string, MySerializer> resultDocuments = new Dictionary<string, MySerializer>();
@@ -596,7 +585,7 @@ declare option output:indent ""yes"";
 
                 var resultDocumentsHandler = new MyResultDocumentsHandler(processor, resultDocuments);
 
-                transformer.setResultDocumentHandler(resultDocumentsHandler); //ResultDocumentHandler = new MyResultDocumentsHandler(processor, resultDocuments);
+                transformer.ResultDocumentHandler = resultDocumentsHandler.ResultDocumentHandler;
 
                 XdmItem inputItem = null;
 
@@ -604,14 +593,14 @@ declare option output:indent ""yes"";
                 {
                     statusText.Text = "Parsing XML input document...";
 
-                    docBuilder.setBaseURI(new JURI(baseInputCodeURI));  //.BaseUri = new Uri(baseInputCodeURI);
-                    inputItem = docBuilder.build(new StreamSource(new JStringReader(inputEditor.Text)));
+                    docBuilder.BaseUri = new Uri(baseInputCodeURI);
+                    inputItem = docBuilder.Build(new StringReader(inputEditor.Text));
                 }
                 else if ((bool)jsonInputType.IsChecked)
                 {
                     statusText.Text = "Parsing JSON input...";
 
-                    inputItem = (XdmItem)jsonBuilder.parseJson(inputEditor.Text);
+                    inputItem = (XdmItem)jsonBuilder.ParseJson(inputEditor.Text);
                 }
 
 
@@ -619,7 +608,7 @@ declare option output:indent ""yes"";
                 {
                     statusText.Text = "Running xsl:initialTemplate...";
 
-                    transformer.callTemplate(null, mainSerializer.serializer);
+                    transformer.CallTemplate(null, mainSerializer.serializer);
 
                     statusText.Text = "";
 
@@ -631,24 +620,24 @@ declare option output:indent ""yes"";
 
                     }
 
-                    var traces = loggerWriter.ToString();
+                    //var traces = loggerWriter.ToString();
 
-                    if (traces != string.Empty)
-                    {
-                        serializedResultDocuments.Add("*** trace ***", loggerWriter.ToString());
-                    }
+                    //if (traces != string.Empty)
+                    //{
+                    //    serializedResultDocuments.Add("*** trace ***", loggerWriter.ToString());
+                    //}
 
-                    traceLogger.close();
+                    //traceLogger.close();
 
                     DisplayResultDocuments(serializedResultDocuments);
                 }
                 else
                 {
-                    transformer.setGlobalContextItem(inputItem);  //.GlobalContextItem = inputItem;
+                    transformer.GlobalContextItem = inputItem;
 
                     statusText.Text = "Applying templates processing...";
 
-                    transformer.applyTemplates(inputItem, mainSerializer.serializer);
+                    transformer.ApplyTemplates(inputItem, mainSerializer.serializer);
 
                     statusText.Text = "";
 
@@ -660,14 +649,14 @@ declare option output:indent ""yes"";
 
                     }
 
-                    var traces = loggerWriter.ToString();
+                    //var traces = loggerWriter.ToString();
 
-                    if (traces != string.Empty)
-                    {
-                        serializedResultDocuments.Add("*** trace ***", loggerWriter.ToString());
-                    }
+                    //if (traces != string.Empty)
+                    //{
+                    //    serializedResultDocuments.Add("*** trace ***", loggerWriter.ToString());
+                    //}
 
-                    traceLogger.close();
+                    //traceLogger.close();
 
                     DisplayResultDocuments(serializedResultDocuments);
                 }
@@ -677,11 +666,11 @@ declare option output:indent ""yes"";
                 statusText.Text = ex.Message;
                 //throw ex;
 
-                var errors = (xsltCompiler.getErrorReporter() as SimpleErrorCollector).ErrorList;
+                var errors = errorCollector.ErrorList;
                 if (errors.Any())
                 {
-                    statusText.Text += string.Format(": {0}: {1}:{2}", errors.First().getMessage(), errors.First().getLocation().getLineNumber(), errors.First().getLocation().getColumnNumber());
-                    resultEditor.Text = string.Join("\n", errors.Select(error => string.Format("{0}: {1}:{2}", error.getMessage(), error.getLocation().getLineNumber(), error.getLocation().getColumnNumber())));
+                    statusText.Text += string.Format(": {0}: {1}:{2}", errors.First().Message, errors.First().Location.LineNumber, errors.First().Location.ColumnNumber);
+                    resultEditor.Text = string.Join("\n", errors.Select(error => string.Format("{0}: {1}:{2}", error.Message, error.Location.LineNumber, error.Location.ColumnNumber)));
                     resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
                 }
             }
@@ -958,74 +947,74 @@ declare option output:indent ""yes"";
             {
                 runXPathEvaluation();
             }
-            else if ((bool)codeTypeXsd.IsChecked)
-            {
-                runXsdValidation();
-            }
+            //else if ((bool)codeTypeXsd.IsChecked)
+            //{
+            //    runXsdValidation();
+            //}
         }
 
-        private void runXsdValidation()
-        {
-            statusText.Text = "";
-            HideResultDocumentList();
-            ClearResultDocumentList();
-            renderResultCbx.IsChecked = false;
-            resultEditor.Clear();
+        //private void runXsdValidation()
+        //{
+        //    statusText.Text = "";
+        //    HideResultDocumentList();
+        //    ClearResultDocumentList();
+        //    renderResultCbx.IsChecked = false;
+        //    resultEditor.Clear();
 
-            Schema schema;
+        //    Schema schema;
 
-            if (codeEditor.Text == string.Empty)
-            {
-                schema = xsd11SchemaFactory.newSchema();
-            }
-            else
-            {
-                statusText.Text = "Parsing/compiling your schema...";
-                try
-                {
-                    schema = xsd11SchemaFactory.newSchema(new StreamSource(new JStringReader(codeEditor.Text), baseXsdCodeURI));
-                }
-                catch (SAXParseException ex)
-                {
-                    statusText.Text += "Schema parsing failed: " + ex.Message;
-                    return;
-                }
-            }
+        //    if (codeEditor.Text == string.Empty)
+        //    {
+        //        schema = xsd11SchemaFactory.newSchema();
+        //    }
+        //    else
+        //    {
+        //        statusText.Text = "Parsing/compiling your schema...";
+        //        try
+        //        {
+        //            schema = xsd11SchemaFactory.newSchema(new StreamSource(new JStringReader(codeEditor.Text), baseXsdCodeURI));
+        //        }
+        //        catch (SAXParseException ex)
+        //        {
+        //            statusText.Text += "Schema parsing failed: " + ex.Message;
+        //            return;
+        //        }
+        //    }
 
-            Validator validator = schema.newValidator();
+        //    Validator validator = schema.newValidator();
 
-            var myErrorHandler = new MyErrorHandler();
+        //    var myErrorHandler = new MyErrorHandler();
 
-            validator.setErrorHandler(myErrorHandler);
+        //    validator.setErrorHandler(myErrorHandler);
 
-            statusText.Text = "Parsing/validating your XML input...";
+        //    statusText.Text = "Parsing/validating your XML input...";
 
-            string resultString;
+        //    string resultString;
 
-            try
-            {
-                validator.validate(new StreamSource(new JStringReader(inputEditor.Text), baseInputCodeURI));
-            }
-            catch (SAXParseException ex)
-            {
-                statusText.Text = "Parsing your XML input failed:" + ex.Message + " (" + ex.getLineNumber() + ":" + ex.getColumnNumber() + ")";
-                resultString = "Parsing your XML input failed:\r\n" + ex.Message + " (" + ex.getLineNumber() + ":" + ex.getColumnNumber() + ")\r\n";
-            }
+        //    try
+        //    {
+        //        validator.validate(new StreamSource(new JStringReader(inputEditor.Text), baseInputCodeURI));
+        //    }
+        //    catch (SAXParseException ex)
+        //    {
+        //        statusText.Text = "Parsing your XML input failed:" + ex.Message + " (" + ex.getLineNumber() + ":" + ex.getColumnNumber() + ")";
+        //        resultString = "Parsing your XML input failed:\r\n" + ex.Message + " (" + ex.getLineNumber() + ":" + ex.getColumnNumber() + ")\r\n";
+        //    }
 
 
-            if (myErrorHandler.Valid)
-            {
-                statusText.Text = resultString = "XML input is valid against schema.";
-            }
-            else
-            {
-                statusText.Text = $"Validation failed: {myErrorHandler.ErrorList.Count} errors.";
-                resultString = "Validation failed:\r\n" + string.Join("\r\n", myErrorHandler.ErrorList);
-            }
+        //    if (myErrorHandler.Valid)
+        //    {
+        //        statusText.Text = resultString = "XML input is valid against schema.";
+        //    }
+        //    else
+        //    {
+        //        statusText.Text = $"Validation failed: {myErrorHandler.ErrorList.Count} errors.";
+        //        resultString = "Validation failed:\r\n" + string.Join("\r\n", myErrorHandler.ErrorList);
+        //    }
 
-            resultEditor.Text = resultString;
-            resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
-        }
+        //    resultEditor.Text = resultString;
+        //    resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
+        //}
 
         private void runXPathEvaluation()
         {
@@ -1045,27 +1034,27 @@ declare option output:indent ""yes"";
                     serializationParamsCode = "map{}";
                 }
 
-                var serializationParams = xpathCompiler.evaluateSingle(serializationParamsCode, null);
+                var serializationParams = xpathCompiler.EvaluateSingle(serializationParamsCode, null);
 
                 //serializer.SetOutputWriter(sw);
 
-                docBuilder.setBaseURI(new JURI(baseInputCodeURI));
+                docBuilder.BaseUri = new Uri(baseInputCodeURI);
 
-                xpathCompiler.setBaseURI(new JURI(baseXPathCodeURI)); //.BaseUri = new Uri(baseXPathCodeURI).AbsoluteUri;
+                xpathCompiler.BaseUri = new Uri(baseXPathCodeURI);
 
-                var result = xpathCompiler.evaluate(
+                var result = xpathCompiler.Evaluate(
                     codeEditor.Text,
                     (bool)xmlInputType.IsChecked ?
-                    docBuilder.build(new StreamSource(new JStringReader(inputEditor.Text)))
+                    docBuilder.Build(new StringReader(inputEditor.Text))
                     : (bool)jsonInputType.IsChecked ?
                     ParseJson(inputEditor.Text) : null);
 
                 //serializer.SerializeXdmValue(result);
 
-                xpathResultSerializer.setVariable(new QName("value"), result);
-                xpathResultSerializer.setVariable(new QName("serialization-parameters"), serializationParams);
+                xpathResultSerializer.SetVariable(new QName("value"), result);
+                xpathResultSerializer.SetVariable(new QName("serialization-parameters"), serializationParams);
 
-                var resultString = xpathResultSerializer.evaluateSingle().getStringValue();
+                var resultString = xpathResultSerializer.EvaluateSingle().StringValue;
 
                 resultEditor.Text = resultString;
                 resultWebView.NavigateToString(resultString);
@@ -1097,78 +1086,82 @@ declare option output:indent ""yes"";
         private void runXQueryEvaluationSaxon()
         {
  
-            xqueryCompiler.setErrorReporter(new SimpleErrorCollector());
+            var errorCollector = new SimpleErrorCollector();
+                
+            xqueryCompiler.ErrorReporter = errorCollector.ErrorReporter;
 
-            xqueryCompiler.setBaseURI(new JURI(baseXQueryCodeURI));//= new Uri(baseXQueryCodeURI).AbsoluteUri;
+            xqueryCompiler.BaseUri = new Uri(baseXQueryCodeURI);
 
             try
             {
-                using (JStringWriter sw = new JStringWriter())
+                using (var sw = new StringWriter())
                 {
-                    serializer.setOutputWriter(sw);
+                    serializer.OutputWriter = sw;
 
                     statusText.Text = "Compiling XQuery...";
 
-                    var xqueryEvaluator = xqueryCompiler.compile(codeEditor.Text).load();
+                    var xqueryEvaluator = xqueryCompiler.Compile(codeEditor.Text).Load();
 
-                    var loggerWriter = new JStringWriter();
+                    xqueryEvaluator.ErrorReporter = errorCollector.ErrorReporter;
 
-                    var traceLogger = new StandardLogger(loggerWriter);
+                    //var loggerWriter = new StringWriter();
 
-                    xqueryEvaluator.setTraceFunctionDestination(traceLogger);
+                    //var traceLogger = new StandardLogger(loggerWriter);
+
+                    //xqueryEvaluator.SetTraceFunctionDestination(traceLogger);
 
                     if ((bool)xmlInputType.IsChecked)
                     {
                         statusText.Text = "Parsing XML input document...";
 
-                        docBuilder.setBaseURI(new JURI(baseInputCodeURI));//.BaseUri = new Uri(baseInputCodeURI);
-                        xqueryEvaluator.setContextItem(docBuilder.build(new StreamSource(new JStringReader(inputEditor.Text))));//.ContextItem = docBuilder.Build(new StringReader(inputEditor.Text));
+                        docBuilder.BaseUri = new Uri(baseInputCodeURI);
+                        xqueryEvaluator.ContextItem = docBuilder.Build(new StringReader(inputEditor.Text));
                     }
                     else if ((bool)jsonInputType.IsChecked)
                     {
                         statusText.Text = "Parsing JSON input";
 
-                        xqueryEvaluator.setContextItem((XdmItem)jsonBuilder.parseJson(inputEditor.Text)); //.ContextItem = ParseJson(inputEditor.Text);
+                        xqueryEvaluator.ContextItem = ParseJson(inputEditor.Text);
                     }
 
                     statusText.Text = "Running XQuery...";
 
-                    xqueryEvaluator.run(serializer);
+                    xqueryEvaluator.Run(serializer);
 
                     statusText.Text = "";
 
-                    var result = sw.toString();
+                    var result = sw.ToString();
 
-                    var traces = loggerWriter.toString();
+                    //var traces = loggerWriter.ToString();
 
-                    if (traces != string.Empty)
-                    {
-                        var results = new Dictionary<String, string>();
-                        results.Add("*** XQuery results ***", result);
-                        results.Add("*** Trace ***", traces);
+                    //if (traces != string.Empty)
+                    //{
+                    //    var results = new Dictionary<String, string>();
+                    //    results.Add("*** XQuery results ***", result);
+                    //    results.Add("*** Trace ***", traces);
 
-                        ShowResultDocumentList();
+                    //    ShowResultDocumentList();
 
-                        DisplayResultDocuments(results);
-                    }
-                    else
-                    {
+                    //    DisplayResultDocuments(results);
+                    //}
+                    //else
+                    //{
                         resultEditor.Text = result;
                         resultWebView.NavigateToString(result);
                         resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("XML");
-                    }
+                    //}
                 }
             }
             catch (Exception ex)
             {
                 statusText.Text = ex.Message;
 
-                var errors = (xqueryCompiler.getErrorReporter() as SimpleErrorCollector).ErrorList;
+                var errors = errorCollector.ErrorList;
                 if (errors.Any())
                 {
 
-                    statusText.Text += string.Format(": {0}: {1}:{2}", errors.First().getMessage(), errors.First().getLocation().getLineNumber(), errors.First().getLocation().getColumnNumber());
-                    resultEditor.Text = string.Join("\n", errors.Select(error => string.Format("{0}: {1}:{2}", error.getMessage(), error.getLocation().getLineNumber(), error.getLocation().getColumnNumber())));
+                    statusText.Text += string.Format(": {0}: {1}:{2}", errors.First().Message, errors.First().Location.LineNumber, errors.First().Location.ColumnNumber);
+                    resultEditor.Text = string.Join("\n", errors.Select(error => string.Format("{0}: {1}:{2}", error.Message, error.Location.LineNumber, error.Location.ColumnNumber)));
                     resultEditor.SyntaxHighlighting = HighlightingManager.Instance.GetDefinition("Text");
                 }
             }

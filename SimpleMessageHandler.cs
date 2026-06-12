@@ -1,24 +1,17 @@
-﻿using java.util.function;
-using net.sf.saxon.s9api;
+﻿using Saxon.Api;
 
 namespace XMLWPFToolbox
 {
-    internal class SimpleMessageHandler : Consumer
+    internal class SimpleMessageHandler
     {
 
         public List<Message> Messages = new List<Message>();
 
-        public string GetMessages() => string.Join("\n", Messages.Select(m => $"{m.getContent()} ({m.getLocation().getLineNumber()}:{m.getLocation().getColumnNumber()})"));
+        public string GetMessages() => string.Join("\n", Messages.Select(m => $"{m.Content} ({m.Location.LineNumber}:{m.Location.ColumnNumber})"));
 
-        public void accept(object t)
+        public void Handle(Message message)
         {
-            Messages.Add((Message)t);
-        }
-
-
-        public Consumer andThen(Consumer after)
-        {
-            throw new NotImplementedException();
+            Messages.Add(message);
         }
     }
 }
