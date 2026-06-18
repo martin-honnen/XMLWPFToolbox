@@ -477,7 +477,7 @@ declare option output:indent ""yes"";
 
         private void AboutXMLToolbox_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1 XML Toolbox using Saxon " + processor.ProductVersion + " or PhoenixmlDb.Xslt 1.4.9/PhoenixmlDb.XQuery 1.4.5" +  $" run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1 Toolbox");
+            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1 XML Toolbox using Saxon " + processor.ProductVersion + " or PhoenixmlDb.Xslt 1.4.10/PhoenixmlDb.XQuery 1.4.6" +  $" run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1 Toolbox");
         }
 
         private string LoadFileIntoEditor(ICSharpCode.AvalonEdit.TextEditor editor, string filter, RadioButton type)
