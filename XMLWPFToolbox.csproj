@@ -9,6 +9,13 @@
     <ApplicationIcon>xmltools.ico</ApplicationIcon>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Enable central package management, https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- This is enabled to mitigate https://github.com/advisories/GHSA-pgww-w46g-26qg -->
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="xmltools.ico" />
   </ItemGroup>
@@ -24,23 +31,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
-    <PackageReference Include="FontAwesome6.Svg" Version="2.5.1" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4129.50" />
-    <PackageReference Include="PhoenixmlDb.XQuery" Version="1.6.1" />
-    <PackageReference Include="SaxonCS-HE" Version="13.0.0" />
+      <PackageReference Include="AvalonEdit" />
+      <PackageReference Include="FontAwesome6.Svg" />
+      <PackageReference Include="Microsoft.Web.WebView2" />
+      <PackageReference Include="PhoenixmlDb.Xslt" />
+      <PackageReference Include="PhoenixmlDb.XQuery" />
+      <PackageReference Include="SaxonCS-HE" />
+      <PackageReference Include="AngleSharp" />
+      
 		<!--
     <MavenReference Include="com.evolvedbinary.thirdparty.xerces:xercesImpl" Version="2.12.2.2" Classifier="xml-schema-1.1" />
     <MavenReference Include="xml-resolver:xml-resolver" Version="1.2" />
     <MavenReference Include="com.evolvedbinary.thirdparty.xml-apis:xml-apis" Version="1.4.02" />
     
     <MavenReference Include="com.evolvedbinary.thirdparty.org.eclipse.wst.xml:xpath2" Version="1.2.1.1" />-->
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0-windows'">
-    <PackageReference Include="PhoenixmlDb.Xslt">
-      <Version>1.6.1</Version>
-    </PackageReference>
   </ItemGroup>
 
 </Project>
