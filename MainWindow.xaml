@@ -8,7 +8,7 @@
         xmlns:commands="clr-namespace:XMLWPFToolbox.Commands"
         xmlns:local="clr-namespace:XMLWPFToolbox"
         mc:Ignorable="d"
-        Title="XSLT 3.0, XQuery 3.1, XPath 3.1 Toolbox" Height="800" Width="1024"
+        Title="XSLT 3.0 and 4.0, XQuery 3.1 and 4.0, XPath 3.1 and 4.0 Toolbox" Height="800" Width="1024"
         Icon="xmltools.ico">
     <Window.CommandBindings>
         <CommandBinding Command="commands:MyApplicationCommands.LoadXmlInput" Executed="LoadXmlInput_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
@@ -39,6 +39,7 @@
         <CommandBinding Command="commands:MyApplicationCommands.SaveInputDocumentAs" Executed="SaveInputDocumentAs_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
 
         <CommandBinding Command="commands:MyApplicationCommands.ToggleEngine" Executed="ToggleEngine_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
+        <CommandBinding Command="commands:MyApplicationCommands.ToggleVersion" Executed="ToggleVersion_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
 
         <CommandBinding Command="commands:MyApplicationCommands.NewPadWindow" Executed="NewPadWindow_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
         <CommandBinding Command="commands:MyApplicationCommands.AboutXMLToolbox" Executed="AboutXMLToolbox_Executed" CanExecute="CommonCommandBinding_CanExecute"/>
@@ -106,6 +107,7 @@
             </MenuItem>
             <MenuItem Header="_Options">
                 <MenuItem Header="Saxon Engine" IsCheckable="True" IsChecked="True" Command="commands:MyApplicationCommands.ToggleEngine"/>
+                <MenuItem Header="Use version 4.0" IsCheckable="True" IsChecked="False" Command="commands:MyApplicationCommands.ToggleVersion"/>
             </MenuItem>
             <MenuItem Header="_Help">
                 <MenuItem Header="About XSLT/XQuery/XPath Toolbox" Command="commands:MyApplicationCommands.AboutXMLToolbox"/>

@@ -36,7 +36,7 @@
       <PackageReference Include="Microsoft.Web.WebView2" />
       <PackageReference Include="PhoenixmlDb.Xslt" />
       <PackageReference Include="PhoenixmlDb.XQuery" />
-      <PackageReference Include="SaxonCS-HE" />
+      <PackageReference Include="SaxonCS-EE" />
       <PackageReference Include="AngleSharp" />
       
 		<!--

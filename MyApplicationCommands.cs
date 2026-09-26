@@ -56,6 +56,8 @@ public static class MyApplicationCommands
 
     public static RoutedUICommand ToggleEngine = new RoutedUICommand("Toggle Engine", "ToggleEngine", typeof(MyApplicationCommands));
 
+    public static RoutedUICommand ToggleVersion = new RoutedUICommand("Toggle Version", "ToggleVersion", typeof(MyApplicationCommands));
+
 
     public static RoutedUICommand NewPadWindow = new RoutedUICommand("New XMLWPFToolbox window", "NewPadWindow", typeof(MyApplicationCommands));
 

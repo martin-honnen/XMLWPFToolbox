@@ -55,6 +55,8 @@ namespace XMLWPFToolbox
 
         private bool useSaxonEngine = true;
 
+        private bool useVersion4 = false;
+
         private string baseResultURI = defaultBaseInputURI;
 
         private string baseXsltCodeURI = defaultBaseInputURI;
@@ -247,6 +249,19 @@ namespace XMLWPFToolbox
             }
         }
 
+        private void ToggleVersion_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            useVersion4 = !useVersion4;
+            if (useVersion4)
+            {
+                statusText.Text = "Switched to version 4.0.";
+            }
+            else
+            {
+                statusText.Text = "Switched to version 3.0/3.1.";
+            }   
+        }
+
         private void NewPadWindow_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var secondaryWindow = new MainWindow();
@@ -254,7 +269,28 @@ namespace XMLWPFToolbox
         }
         private void NewXsltCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            codeEditor.Text = @"<xsl:stylesheet xmlns:xsl=""http://www.w3.org/1999/XSL/Transform"" version=""3.0""
+            if (useVersion4)
+            {
+                codeEditor.Text = @"<xsl:stylesheet xmlns:xsl=""http://www.w3.org/1999/XSL/Transform"" version=""4.0""
+  fixed-namespaces=""#standard""
+  expand-text=""yes"">
+
+  <xsl:mode on-no-match=""shallow-copy""/>
+
+  <xsl:output indent=""yes""/>
+
+  <xsl:template match=""/"" name=""xsl:initial-template"">
+    <xsl:copy>
+      <xsl:apply-templates/>
+      <xsl:comment>Run with {system-property('xsl:product-name')} {system-property('xsl:product-version')} at {current-dateTime()}</xsl:comment>
+    </xsl:copy>
+  </xsl:template>
+
+</xsl:stylesheet>";
+            }
+            else
+            {
+                codeEditor.Text = @"<xsl:stylesheet xmlns:xsl=""http://www.w3.org/1999/XSL/Transform"" version=""3.0""
   xmlns:xs=""http://www.w3.org/2001/XMLSchema""
   exclude-result-prefixes=""#all""
   expand-text=""yes"">
@@ -271,6 +307,7 @@ namespace XMLWPFToolbox
   </xsl:template>
 
 </xsl:stylesheet>";
+            }
 
             baseXsltCodeURI = defaultBaseInputURI;
 
@@ -280,7 +317,20 @@ namespace XMLWPFToolbox
 
         private void NewXQueryCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            codeEditor.Text = @"declare namespace map = ""http://www.w3.org/2005/xpath-functions/map"";
+            if (useVersion4)
+            {
+                codeEditor.Text = @"xquery version ""4.0"";
+
+declare namespace output = ""http://www.w3.org/2010/xslt-xquery-serialization"";
+
+declare option output:method ""xml"";
+declare option output:indent ""yes"";
+
+.";
+            }
+            else
+            {
+                codeEditor.Text = @"declare namespace map = ""http://www.w3.org/2005/xpath-functions/map"";
 declare namespace array = ""http://www.w3.org/2005/xpath-functions/array"";
 
 declare namespace output = ""http://www.w3.org/2010/xslt-xquery-serialization"";
@@ -289,7 +339,7 @@ declare option output:method ""xml"";
 declare option output:indent ""yes"";
 
 .";
-
+            }
             baseXQueryCodeURI = defaultBaseInputURI;
 
             codeTypeXQuery.IsChecked = true;
@@ -308,7 +358,16 @@ declare option output:indent ""yes"";
 
         private void NewXPathCode_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            codeEditor.Text = @"";
+            if (useVersion4)
+            {
+                codeEditor.Text = @"declare namespace map = ""http://www.w3.org/2005/xpath-functions/map"";
+declare namespace array = ""http://www.w3.org/2005/xpath-functions/array"";
+.";
+            }
+            else
+            {
+                codeEditor.Text = @".";
+            }
 
             baseXPathCodeURI = defaultBaseInputURI;
 
@@ -477,7 +536,7 @@ declare option output:indent ""yes"";
 
         private void AboutXMLToolbox_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            MessageBox.Show("XSLT 3.0, XQuery 3.1, XPath 3.1 XML Toolbox using Saxon " + processor.ProductVersion + " or PhoenixmlDb.Xslt 1.7.0/PhoenixmlDb.XQuery 1.7.0" +  $" run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1 Toolbox");
+            MessageBox.Show("XSLT 3.0/4.0, XQuery 3.1/4.0, XPath 3.1/4.0 XML Toolbox using Saxon " + processor.ProductTitle + " or PhoenixmlDb.Xslt 2.2.0/PhoenixmlDb.XQuery 2.2.0" +  $" run under {Environment.OSVersion} .NET {Environment.Version}", "About XSLT 3.0/XQuery 3.1/XPath 3.1 Toolbox");
         }
 
         private string LoadFileIntoEditor(ICSharpCode.AvalonEdit.TextEditor editor, string filter, RadioButton type)
@@ -555,6 +614,15 @@ declare option output:indent ""yes"";
 
         private void runXsltTransformationSaxon()
         {
+            if (useVersion4)
+            {
+                xsltCompiler.XsltLanguageVersion = "4.0";
+            }
+            else
+            {
+                xsltCompiler.XsltLanguageVersion = "3.0";
+            }
+
             var errorCollector = new SimpleErrorCollector();
             xsltCompiler.ErrorReporter = errorCollector.ErrorReporter;
 
@@ -1018,6 +1086,15 @@ declare option output:indent ""yes"";
 
         private void runXPathEvaluation()
         {
+            if (useVersion4)
+            {
+                xpathCompiler.XPathLanguageVersion = "4.0";
+            }
+            else
+            {
+                xpathCompiler.XPathLanguageVersion = "3.1";
+            }
+
             statusText.Text = "";
             HideResultDocumentList();
             ClearResultDocumentList();
@@ -1085,7 +1162,15 @@ declare option output:indent ""yes"";
 
         private void runXQueryEvaluationSaxon()
         {
- 
+            if (useVersion4)
+            {
+                xqueryCompiler.XQueryLanguageVersion = "4.0";
+            }
+            else
+            {
+                xqueryCompiler.XQueryLanguageVersion = "3.1";
+            }
+
             var errorCollector = new SimpleErrorCollector();
                 
             xqueryCompiler.ErrorReporter = errorCollector.ErrorReporter;
